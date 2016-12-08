@@ -218,5 +218,8 @@ popd
 %endif
 
 %changelog
+* Fri Dec 09 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 1-2
+- new package built with tito
+
 * Sun Nov 27 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 1-1
 - Initial package
