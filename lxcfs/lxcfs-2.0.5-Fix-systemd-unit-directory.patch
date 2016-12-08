@@ -1,0 +1,25 @@
+From 7d25601e0e20f4bb0354212dd2342812e7870fd9 Mon Sep 17 00:00:00 2001
+From: Reto Gantenbein <reto.gantenbein@linuxmonk.ch>
+Date: Wed, 30 Nov 2016 22:36:11 +0100
+Subject: [PATCH] Fix systemd unit directory
+
+---
+ config/init/systemd/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/config/init/systemd/Makefile.am b/config/init/systemd/Makefile.am
+index 79e96f5..c97b5b2 100644
+--- a/config/init/systemd/Makefile.am
++++ b/config/init/systemd/Makefile.am
+@@ -1,7 +1,7 @@
+ EXTRA_DIST = lxcfs.service
+ 
+ if INIT_SCRIPT_SYSTEMD
+-SYSTEMD_UNIT_DIR = /lib/systemd/system
++SYSTEMD_UNIT_DIR = /usr/lib/systemd/system
+ 
+ install-systemd: lxcfs.service
+ 	$(MKDIR_P) $(DESTDIR)$(SYSTEMD_UNIT_DIR)
+-- 
+2.7.4
+
