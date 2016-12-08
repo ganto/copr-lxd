@@ -92,5 +92,8 @@ exit 0
 /%{_lib}/security/pam_cgfs.so
 
 %changelog
+* Fri Dec 09 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.0.5-2
+- new package built with tito
+
 * Wed Nov 30 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.0.5-1
 - Initial package
