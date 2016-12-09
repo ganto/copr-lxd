@@ -87,7 +87,7 @@ rm -f %{buildroot}%{_libdir}/liblxcfs.la
 /%{_lib}/security/pam_cgfs.so
 
 %changelog
-* Fri Dec 09 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.0.5-3
+* Fri Dec 09 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.0.5-3
 - Many spec file cleanups/fixes reported by rpmlint
 
 * Fri Dec 09 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.0.5-2
