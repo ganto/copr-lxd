@@ -1,9 +1,9 @@
 Name:       lxcfs
 Version:    2.0.5
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    FUSE filesystem for LXC
 
-License:    Apache-2.0
+License:    ASL 2.0
 URL:        https://linuxcontainers.org
 Source0:    https://linuxcontainers.org/downloads/%{name}/%{name}-%{version}.tar.gz
 Patch0:     lxcfs-2.0.5-Fix-systemd-unit-directory.patch
@@ -15,10 +15,9 @@ BuildRequires: libtool
 BuildRequires: pam-devel
 BuildRequires: pkgconfig
 BuildRequires: pkgconfig(fuse)
-BuildRequires: systemd
+BuildRequires: systemd-units
 
 AutoProv:      no
-Provides:      %{name} = %{version}%{?dist}
 
 %description
 LXCFS is a simple userspace filesystem designed to work
@@ -64,14 +63,10 @@ install -p -m 0755 .libs/liblxcfs.so %{buildroot}/usr/lib/%{name}/
 rm -f %{buildroot}%{_libdir}/liblxcfs.so*
 rm -f %{buildroot}%{_libdir}/liblxcfs.la
 
-%pre
-# check for existence of mock group, create it if not found
-getent group mock > /dev/null || groupadd -f -g %mockgid -r mock
-exit 0
-
 %files
 %defattr(-,root,root)
-%doc AUTHORS ChangeLog README COPYING
+%doc AUTHORS
+%license COPYING
 %{_bindir}/*
 %{_datadir}/lxc
 %{_datadir}/%{name}
@@ -92,8 +87,11 @@ exit 0
 /%{_lib}/security/pam_cgfs.so
 
 %changelog
-* Fri Dec 09 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.0.5-2
-- new package built with tito
+* Fri Dec 09 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.0.5-3
+- Many spec file cleanups/fixes reported by rpmlint
+
+* Fri Dec 09 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.0.5-2
+- New package built with tito
 
 * Wed Nov 30 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.0.5-1
 - Initial package
