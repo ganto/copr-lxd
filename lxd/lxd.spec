@@ -300,5 +300,8 @@ popd
 %{_mandir}/man1/fuidshift.1.gz
 
 %changelog
+* Sat Dec 10 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.6.2-2
+- new package built with tito
+
 * Sun Dec 4 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.6.2-1
 - Initial packaging
