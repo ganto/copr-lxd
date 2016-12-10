@@ -35,7 +35,7 @@
 
 Name:    lxd
 Version: 2.6.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
 URL: https://linuxcontainers.org/lxd
@@ -46,6 +46,7 @@ Source3: lxd.service
 Source4: lxd.lxd-containers.service
 Source5: lxd.dnsmasq
 Source6: lxd.logrotate
+Source7: shutdown
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
@@ -179,6 +180,15 @@ using an image based workflow and with support for live migration.
 This package contains extra tools provided with LXD.
  - fuidshift - A tool to map/unmap filesystem uids/gids
 
+%package doc
+Summary: %{summary} - Documentation
+
+%description doc
+LXD offers a REST API to remotely manage containers over the network,
+using an image based workflow and with support for live migration.
+
+This package contains user documentation.
+
 %prep
 %setup -q -n %{repo}-%{commit}
 
@@ -233,6 +243,8 @@ install -d %{buildroot}%{_unitdir}
 install -p -m 644 %{SOURCE2} %{buildroot}%{_unitdir}
 install -p -m 644 %{SOURCE3} %{buildroot}%{_unitdir}
 install -p -m 644 %{SOURCE4} %{buildroot}%{_unitdir}/%{name}-containers.service
+install -d %{buildroot}/usr/lib/%{name}
+install -p -m 755 %{SOURCE7} %{buildroot}/usr/lib/%{name}/shutdown
 
 # install man-pages
 install -d %{buildroot}%{_mandir}/man1
@@ -241,7 +253,7 @@ cp -p lxc.1 %{buildroot}%{_mandir}/man1/
 cp -p fuidshift.1 %{buildroot}%{_mandir}/man1/
 
 # cache and log directories
-install -d -m 0750 %{buildroot}%{_localstatedir}/%{_lib}/%{name}
+install -d -m 0750 %{buildroot}%{_localstatedir}/lib/%{name}
 install -d -m 0750 %{buildroot}%{_localstatedir}/log/%{name}
 
 # source codes for building projects
@@ -272,12 +284,12 @@ popd
 %config(noreplace) %{_sysconfdir}/dnsmasq.d/lxd
 %config(noreplace) %{_sysconfdir}/logrotate.d/lxd
 %{_bindir}/%{name}
-%{_unitdir}/%{name}.socket
-%{_unitdir}/%{name}.service
-%{_unitdir}/%{name}-containers.service
+%{_unitdir}/*
+%dir /usr/lib/%{name}
+/usr/lib/%{name}/*
 %{_mandir}/man1/%{name}.1.gz
 %defattr(-, root, lxd, 0750)
-%dir %{_localstatedir}/%{_lib}/%{name}
+%dir %{_localstatedir}/lib/%{name}
 %dir %{_localstatedir}/log/%{name}
 
 %if 0%{?with_devel} || ! 0%{?with_bundled}
@@ -299,9 +311,13 @@ popd
 %{_bindir}/fuidshift
 %{_mandir}/man1/fuidshift.1.gz
 
+%files doc
+%license COPYING
+%doc doc/*
+
 %changelog
-* Sat Dec 10 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.6.2-2
-- new package built with tito
+* Sat Dec 10 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.6.2-2
+- Big spec file cleanup, fix devel RPM
 
 * Sun Dec 4 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.6.2-1
 - Initial packaging
