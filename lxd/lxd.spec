@@ -316,6 +316,9 @@ popd
 %doc doc/*
 
 %changelog
+* Sat Dec 10 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.6.2-3
+- Fix /var/lib/lxd, add shutdown script, new lxd-doc RPM
+
 * Sat Dec 10 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.6.2-2
 - Big spec file cleanup, fix devel RPM
 
