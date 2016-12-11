@@ -35,7 +35,7 @@
 
 Name:    lxd
 Version: 2.6.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
 URL: https://linuxcontainers.org/lxd
@@ -90,6 +90,9 @@ Requires: xz
 
 %if 0%{?fedora}
 Suggests: criu
+Suggests: device-mapper-persistent-data
+Suggests: lvm2
+Suggests: lxd-doc
 Suggests: lxd-tools
 %endif
 
@@ -288,7 +291,6 @@ popd
 %dir /usr/lib/%{name}
 /usr/lib/%{name}/*
 %{_mandir}/man1/%{name}.1.gz
-%defattr(-, root, lxd, 0750)
 %dir %{_localstatedir}/lib/%{name}
 %dir %{_localstatedir}/log/%{name}
 
@@ -316,7 +318,7 @@ popd
 %doc doc/*
 
 %changelog
-* Sat Dec 10 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.6.2-3
+* Sat Dec 10 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.6.2-3
 - Fix /var/lib/lxd, add shutdown script, new lxd-doc RPM
 
 * Sat Dec 10 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.6.2-2
