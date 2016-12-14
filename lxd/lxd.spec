@@ -318,6 +318,9 @@ popd
 %doc doc/*
 
 %changelog
+* Wed Dec 14 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.6.2-5
+- Don't restrict world access to /var/{lib,log}/lxd
+
 * Sun Dec 11 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.6.2-4
 - Fix cache directory permissions, add more suggested packages
 
