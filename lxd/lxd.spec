@@ -35,7 +35,7 @@
 
 Name:    lxd
 Version: 2.6.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
 URL: https://linuxcontainers.org/lxd
@@ -256,8 +256,8 @@ cp -p lxc.1 %{buildroot}%{_mandir}/man1/
 cp -p fuidshift.1 %{buildroot}%{_mandir}/man1/
 
 # cache and log directories
-install -d -m 0750 %{buildroot}%{_localstatedir}/lib/%{name}
-install -d -m 0750 %{buildroot}%{_localstatedir}/log/%{name}
+install -d %{buildroot}%{_localstatedir}/lib/%{name}
+install -d %{buildroot}%{_localstatedir}/log/%{name}
 
 # source codes for building projects
 %if 0%{?with_devel} || ! 0%{?with_bundled}
@@ -318,7 +318,7 @@ popd
 %doc doc/*
 
 %changelog
-* Sun Dec 11 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.6.2-4
+* Sun Dec 11 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.6.2-4
 - Fix cache directory permissions, add more suggested packages
 
 * Sat Dec 10 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.6.2-3
