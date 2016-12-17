@@ -96,5 +96,5 @@ PYTHONPATH=. py.test-3
 %{python3_sitelib}/%{srcname}
 
 %changelog
-* Sat Dec 17 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 0.1.5-1
+* Sat Dec 17 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.1.5-1
 - Initial packaging
