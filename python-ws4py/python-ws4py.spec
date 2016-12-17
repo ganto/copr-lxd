@@ -130,5 +130,5 @@ popd
 %endif
 
 %changelog
-* Sat Dec 17 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 0.3.4-1
+* Sat Dec 17 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.3.4-1
 - Initial packaging
