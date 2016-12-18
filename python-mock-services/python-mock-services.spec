@@ -8,7 +8,7 @@
 
 Name:           python-%{pkgname}
 Version:        0.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Easy way of mocking API Services
 License:        MIT
 URL:            https://pypi.python.org/pypi/%{pkgname}
@@ -33,7 +33,7 @@ BuildRequires:  python-six
 
 Requires:       python2-attrs
 Requires:       python2-funcsigs
-Requires:       python2-requests-mock
+Requires:       python-requests-mock
 
 %description -n python2-%{pkgname}
 Aims to provide an easy way to mock an entire service
@@ -104,5 +104,5 @@ PYTHONPATH=. nosetests-%{python3_version}
 %endif
 
 %changelog
-* Sun Dec 18 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.3-1
+* Sun Dec 18 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 0.3-1
 - Initial packaging
