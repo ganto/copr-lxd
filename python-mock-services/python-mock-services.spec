@@ -104,5 +104,8 @@ PYTHONPATH=. nosetests-%{python3_version}
 %endif
 
 %changelog
+* Sun Dec 18 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.3-2
+- Fix python-requests-mock dependency definition
+
 * Sun Dec 18 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 0.3-1
 - Initial packaging
