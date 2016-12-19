@@ -143,5 +143,5 @@ nosetests-%{python3_version} pylxd
 %license LICENSE
 
 %changelog
-* Mon Dec 19 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.2.2-1
+* Mon Dec 19 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.2.2-1
 - Initial packaging
