@@ -12,91 +12,131 @@
 
 Name:           python-%{pkgname}
 Version:        2.2.2
-Release:        1%{?dist}
-Summary:        Python bindings for LXD
+Release:        2%{?dist}
+Summary:        Python library for interacting with LXD REST API
+
+Group:          Development/Languages
 License:        ASL 2.0
 URL:            https://linuxcontainers.org/lxd
 Source0:        https://github.com/lxc/%{pkgname}/archive/%{version}/%{pkgname}-%{version}.tar.gz
+BuildArch:      noarch
 
 %description
-Python library for interacting with LXD REST API.
+%{summary}
 
 %package -n python2-%{pkgname}
-Summary:        Python 2.x bindings for LXD
+Summary:        Python 2 library for interacting with LXD REST API
 %{?python_provide:%python_provide python2-%{pkgname}}
-BuildRequires:  python2-babel
-BuildRequires:  python2-coverage
+
 BuildRequires:  python2-cryptography
 BuildRequires:  python2-dateutil
-BuildRequires:  python2-ddt
 BuildRequires:  python2-devel
-BuildRequires:  python2-flake8
-BuildRequires:  python2-mock
-BuildRequires:  python2-mock-services
-BuildRequires:  python2-nose
 BuildRequires:  python2-pbr
 BuildRequires:  python2-requests
 BuildRequires:  python2-requests_unixsocket
 BuildRequires:  python2-setuptools
 BuildRequires:  python-six
 BuildRequires:  python2-ws4py
+# Required for tests
+BuildRequires:  python2-coverage
+BuildRequires:  python2-ddt
+BuildRequires:  python2-flake8
+BuildRequires:  python2-mock
+BuildRequires:  python2-mock-services
+BuildRequires:  python2-nose
 
-Requires:       python2-babel
 Requires:       python2-cryptography
 Requires:       python2-dateutil
+Requires:       python2-pbr
 Requires:       python2-requests
 Requires:       python2-requests_unixsocket
 Requires:       python-six
 Requires:       python2-ws4py
 
 %description -n python2-%{pkgname}
-Python library for interacting with LXD REST API.
+LXD offers a REST API to remotely manage containers over the network,
+using an image based workflow and with support for live migration.
 
-Python 2 version.
+pylxd is a small Python library for interacting the with the
+LXD REST API.
+
+This package contains the Python 2 module.
+
+%package        doc
+Summary:        Documentation for %{name}
+Group:          Documentation
+BuildRequires:  python-sphinx
+
+%description    doc
+Documentation for %{name}.
+
+%package -n python2-%{pkgname}-tests
+Summary:        Tests for the pylxd Python 2 library
+
+Requires:       python2-%{pkgname} = %{version}-%{release}
+Requires:       python2-coverage
+Requires:       python2-ddt
+Requires:       python2-flake8
+Requires:       python2-mock
+Requires:       python2-mock-services
+Requires:       python2-nose
+
+%description -n python2-%{pkgname}-tests
+Tests for the pylxd Python 2 library.
 
 %if %{with python3}
 %package -n     python3-%{pkgname}
-Summary:        Python 3.x bindings for LXD
+Summary:        Python 3 library for interacting with LXD REST API
 %{?python_provide:%python_provide python3-%{pkgname}}
-BuildRequires:  python3-babel
-BuildRequires:  python3-coverage
+
 BuildRequires:  python3-cryptography
 BuildRequires:  python3-dateutil
-BuildRequires:  python3-ddt
 BuildRequires:  python3-devel
-BuildRequires:  python3-flake8
-BuildRequires:  python3-mock
-BuildRequires:  python3-mock-services
-BuildRequires:  python3-nose
 BuildRequires:  python3-pbr
 BuildRequires:  python3-requests
 BuildRequires:  python3-requests_unixsocket
 BuildRequires:  python3-setuptools
 BuildRequires:  python3-six
 BuildRequires:  python3-ws4py
+# Required for tests
+BuildRequires:  python3-coverage
+BuildRequires:  python3-ddt
+BuildRequires:  python3-flake8
+BuildRequires:  python3-mock
+BuildRequires:  python3-mock-services
+BuildRequires:  python3-nose
 
-Requires:       python3-babel
 Requires:       python3-cryptography
 Requires:       python3-dateutil
+Requires:       python3-pbr
 Requires:       python3-requests
 Requires:       python3-requests_unixsocket
 Requires:       python3-six
 Requires:       python3-ws4py
 
 %description -n python3-%{pkgname}
-Python library for interacting with LXD REST API.
+LXD offers a REST API to remotely manage containers over the network,
+using an image based workflow and with support for live migration.
 
-Python 3 version.
+pylxd is a small Python library for interacting the with the
+LXD REST API.
+
+This package contains the Python 3 module.
+
+%package -n python3-%{pkgname}-tests
+Summary:        Tests for the pylxd Python 3 library
+
+Requires:       python3-%{pkgname} = %{version}-%{release}
+Requires:       python3-coverage
+Requires:       python3-ddt
+Requires:       python3-flake8
+Requires:       python3-mock
+Requires:       python3-mock-services
+Requires:       python3-nose
+
+%description -n python3-%{pkgname}-tests
+Tests for the pylxd Python 3 library.
 %endif
-
-%package        doc
-Summary:        Documentation for %{name}
-BuildArch:      noarch
-BuildRequires:  python-sphinx
-Requires:       %{name} = %{version}-%{release}
-
-%description    doc
-Documentation for %{name}.
 
 %prep
 %autosetup -n %{pkgname}-%{version} -p1
@@ -110,13 +150,11 @@ Documentation for %{name}.
 
 %install
 %py2_install
-# unfortunately pbr will also install the tests and doesn't support
-# excluding files, therefore they will be removed manually
-rm -rf %{buildroot}%{python2_sitelib}/%{pkgname}/{tests,deprecated/tests}
 %if %{with python3}
 %py3_install
-rm -rf %{buildroot}%{python3_sitelib}/%{pkgname}/{tests,deprecated/tests}
 %endif
+# Fix hidden-file-or-dir warnings
+rm -fr doc/build/html/.buildinfo
 
 %check
 nosetests-%{python2_version} pylxd
@@ -129,6 +167,17 @@ nosetests-%{python3_version} pylxd
 %license LICENSE
 %{python2_sitelib}/%{pkgname}-%{version}-py%{python2_version}.egg-info
 %{python2_sitelib}/%{pkgname}
+%exclude %{python2_sitelib}/%{pkgname}/tests
+%exclude %{python2_sitelib}/%{pkgname}/deprecated/tests
+
+%files doc
+%doc doc/build/html
+%license LICENSE
+
+%files -n python2-%{pkgname}-tests
+%license LICENSE
+%{python2_sitelib}/%{pkgname}/tests
+%{python2_sitelib}/%{pkgname}/deprecated/tests
 
 %if %{with python3}
 %files -n python3-%{pkgname}
@@ -136,12 +185,15 @@ nosetests-%{python3_version} pylxd
 %license LICENSE
 %{python3_sitelib}/%{pkgname}-%{version}-py%{python3_version}.egg-info
 %{python3_sitelib}/%{pkgname}
+%exclude %{python3_sitelib}/%{pkgname}/tests
+%exclude %{python3_sitelib}/%{pkgname}/deprecated/tests
+
+%files -n python3-%{pkgname}-tests
+%license LICENSE
+%{python3_sitelib}/%{pkgname}/tests
+%{python3_sitelib}/%{pkgname}/deprecated/tests
 %endif
 
-%files doc
-%doc doc/build/html
-%license LICENSE
-
 %changelog
-* Mon Dec 19 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.2.2-1
+* Mon Dec 19 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.2.2-1
 - Initial packaging
