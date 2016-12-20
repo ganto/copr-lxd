@@ -195,5 +195,8 @@ nosetests-%{python3_version} pylxd
 %endif
 
 %changelog
+* Tue Dec 20 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.2.2-2
+- Fix runtime dependencies, fix arch, generate separate test packages
+
 * Mon Dec 19 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.2.2-1
 - Initial packaging
