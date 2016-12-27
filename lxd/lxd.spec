@@ -335,6 +335,10 @@ popd
 %doc doc/*
 
 %changelog
+* Tue Dec 27 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.7-1
+- Version bump to lxd-2.7, set LXD_DIR to mode 0711
+- Add lxc-to-lxd migration script to lxd-tools package
+
 * Wed Dec 14 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.6.2-5
 - Don't restrict world access to /var/{lib,log}/lxd
 
