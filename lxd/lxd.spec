@@ -23,7 +23,7 @@
 
 # lxd
 %global git0 https://%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 58a1b1236b8a8414ddbaa8a3ede2051ba2ce7516
+%global commit 2bf72f0f16a07020fa92e5a4e2f77487f0804491
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 
@@ -34,8 +34,8 @@
 %global import_path1 gopkg.in/lxc/go-lxc.v2
 
 Name:    lxd
-Version: 2.6.2
-Release: 5%{?dist}
+Version: 2.7.0
+Release: 1%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
 URL: https://linuxcontainers.org/lxd
@@ -150,8 +150,12 @@ Provides: golang(%{import_path}/fuidshift) = %{version}-%{release}
 Provides: golang(%{import_path}/shared) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/gnuflag} = %{version}-%{release}
 Provides: golang(%{import_path}/shared/i18n) = %{version}-%{release}
+Provides: golang(%{import_path}/shared/ioprogress) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/logging) = %{version}-%{release}
+Provides: golang(%{import_path}/shared/osarch) = %{version}-%{release}
+Provides: golang(%{import_path}/shared/simplestreams) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/termios) = %{version}-%{release}
+Provides: golang(%{import_path}/shared/version) = %{version}-%{release}
 
 Provides: golang(%{import_path1}) = %{version}-%{release}
 
@@ -256,7 +260,7 @@ cp -p lxc.1 %{buildroot}%{_mandir}/man1/
 cp -p fuidshift.1 %{buildroot}%{_mandir}/man1/
 
 # cache and log directories
-install -d %{buildroot}%{_localstatedir}/lib/%{name}
+install -d -m 711 %{buildroot}%{_localstatedir}/lib/%{name}
 install -d %{buildroot}%{_localstatedir}/log/%{name}
 
 # source codes for building projects
@@ -291,8 +295,9 @@ popd
 %dir /usr/lib/%{name}
 /usr/lib/%{name}/*
 %{_mandir}/man1/%{name}.1.gz
-%dir %{_localstatedir}/lib/%{name}
 %dir %{_localstatedir}/log/%{name}
+%defattr(-, root, root, 0711)
+%dir %{_localstatedir}/lib/%{name}
 
 %if 0%{?with_devel} || ! 0%{?with_bundled}
 %files devel -f devel.file-list
