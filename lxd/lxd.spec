@@ -180,12 +180,16 @@ This package contains the command line client.
 %package tools
 Summary: %{summary} - Extra Tools
 
+BuildRequires: python3-lxc
+Requires: python3-lxc
+
 %description tools
 LXD offers a REST API to remotely manage containers over the network,
 using an image based workflow and with support for live migration.
 
 This package contains extra tools provided with LXD.
  - fuidshift - A tool to map/unmap filesystem uids/gids
+ - lxc-to-lxd - A tool to migrate LXC containers to LXD
 
 %package doc
 Summary: %{summary} - Documentation
@@ -222,6 +226,7 @@ export GOPATH=$(pwd):$(pwd)/Godeps/_workspace:%{gopath}
 help2man bin/lxd -n "The container hypervisor - daemon" --no-info > lxd.1
 help2man bin/lxc -n "The container hypervisor - client" --no-info > lxc.1
 help2man bin/fuidshift -n "uid/gid shifter" --no-info > fuidshift.1
+help2man scripts/lxc-to-lxd -n "Convert LXC containers to LXD" --no-info --version-string=%{version} > lxc-to-lxd.1
 
 %pre
 # check for existence of lxd group, create it if not found
@@ -234,6 +239,9 @@ install -d %{buildroot}%{_bindir}
 install -p -m 755 bin/lxd %{buildroot}%{_bindir}/lxd
 install -p -m 755 bin/lxc %{buildroot}%{_bindir}/lxc
 install -p -m 755 bin/fuidshift %{buildroot}%{_bindir}/fuidshift
+
+# install extra script
+install -p -m 755 scripts/lxc-to-lxd %{buildroot}%{_bindir}/lxc-to-lxd
 
 # extra configs
 install -d %{buildroot}%{_sysconfdir}/dnsmasq.d
@@ -258,6 +266,7 @@ install -d %{buildroot}%{_mandir}/man1
 cp -p lxd.1 %{buildroot}%{_mandir}/man1/
 cp -p lxc.1 %{buildroot}%{_mandir}/man1/
 cp -p fuidshift.1 %{buildroot}%{_mandir}/man1/
+cp -p lxc-to-lxd.1 %{buildroot}%{_mandir}/man1/
 
 # cache and log directories
 install -d -m 711 %{buildroot}%{_localstatedir}/lib/%{name}
@@ -316,7 +325,9 @@ popd
 %files tools
 %license COPYING
 %{_bindir}/fuidshift
+%{_bindir}/lxc-to-lxd
 %{_mandir}/man1/fuidshift.1.gz
+%{_mandir}/man1/lxc-to-lxd.1.gz
 
 %files doc
 %license COPYING
