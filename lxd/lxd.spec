@@ -34,7 +34,7 @@
 %global import_path1 gopkg.in/lxc/go-lxc.v2
 
 Name:    lxd
-Version: 2.7.0
+Version: 2.7
 Release: 1%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
@@ -192,6 +192,7 @@ This package contains extra tools provided with LXD.
  - lxc-to-lxd - A tool to migrate LXC containers to LXD
 
 %package doc
+BuildArch: noarch
 Summary: %{summary} - Documentation
 
 %description doc
