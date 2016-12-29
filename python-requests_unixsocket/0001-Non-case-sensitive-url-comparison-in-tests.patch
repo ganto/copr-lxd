@@ -1,0 +1,40 @@
+From 811e27052d8a52e648689fbbae38af2713746b1f Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Ond=C5=99ej=20Kobli=C5=BEel?= <koblizeko@gmail.com>
+Date: Tue, 20 Dec 2016 07:33:13 +0100
+Subject: [PATCH] Non case sensitive url comparison in tests.
+
+---
+ requests_unixsocket/tests/test_requests_unixsocket.py | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/requests_unixsocket/tests/test_requests_unixsocket.py b/requests_unixsocket/tests/test_requests_unixsocket.py
+index 34151b2..733aa87 100755
+--- a/requests_unixsocket/tests/test_requests_unixsocket.py
++++ b/requests_unixsocket/tests/test_requests_unixsocket.py
+@@ -34,7 +34,7 @@ def test_unix_domain_adapter_ok():
+             assert r.headers['X-Requested-Path'] == '/path/to/page'
+             assert r.headers['X-Socket-Path'] == usock_thread.usock
+             assert isinstance(r.connection, requests_unixsocket.UnixAdapter)
+-            assert r.url == url
++            assert r.url.lower() == url.lower()
+             if method == 'head':
+                 assert r.text == ''
+             else:
+@@ -62,7 +62,7 @@ def test_unix_domain_adapter_url_with_query_params():
+             assert r.headers['X-Requested-Query-String'] == 'timestamp=true'
+             assert r.headers['X-Socket-Path'] == usock_thread.usock
+             assert isinstance(r.connection, requests_unixsocket.UnixAdapter)
+-            assert r.url == url
++            assert r.url.lower() == url.lower()
+             if method == 'head':
+                 assert r.text == ''
+             else:
+@@ -110,7 +110,7 @@ def test_unix_domain_adapter_monkeypatch():
+                 assert r.headers['X-Socket-Path'] == usock_thread.usock
+                 assert isinstance(r.connection,
+                                   requests_unixsocket.UnixAdapter)
+-                assert r.url == url
++                assert r.url.lower() == url.lower()
+                 if method == 'head':
+                     assert r.text == ''
+                 else:

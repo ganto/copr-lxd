@@ -10,11 +10,12 @@
 
 Name:           python-%{srcname}
 Version:        0.1.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Use requests to talk HTTP via a UNIX domain socket
 License:        ASL 2.0
 URL:            https://pypi.python.org/pypi/%{gh_name}
 Source0:        https://github.com/%{gh_owner}/%{gh_name}/archive/%{version}/%{gh_name}-%{version}.tar.gz
+Patch0:         0001-Non-case-sensitive-url-comparison-in-tests.patch
 BuildArch:      noarch
 
 %description
@@ -61,7 +62,7 @@ Python 3 version.
 %endif
 
 %prep
-%autosetup -n %{gh_name}-%{version}
+%autosetup -n %{gh_name}-%{version} -p1
 # Remove bundled egg-info
 rm -rf %{srcname}.egg-info
 
