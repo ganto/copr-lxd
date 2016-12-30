@@ -130,5 +130,8 @@ popd
 %endif
 
 %changelog
+* Fri Dec 30 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.3.4-2
+- Rebuild for Python 3.6
+
 * Sat Dec 17 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.3.4-1
 - Initial packaging
