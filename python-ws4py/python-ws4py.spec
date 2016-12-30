@@ -10,7 +10,7 @@
 
 Name:           python-%{srcname}
 Version:        0.3.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        WebSocket client and server library for Python
 License:        BSD
 URL:            https://pypi.python.org/pypi/%{srcname}
