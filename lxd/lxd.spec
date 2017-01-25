@@ -23,7 +23,7 @@
 
 # lxd
 %global git0 https://%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 2bf72f0f16a07020fa92e5a4e2f77487f0804491
+%global commit 034658fc012771d6dfe48b37d2a346073d62f4f8
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 
@@ -34,7 +34,7 @@
 %global import_path1 gopkg.in/lxc/go-lxc.v2
 
 Name:    lxd
-Version: 2.7
+Version: 2.8
 Release: 1%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
@@ -122,6 +122,7 @@ BuildRequires: golang(github.com/syndtr/gocapability/capability)
 BuildRequires: golang(golang.org/x/crypto/scrypt)
 BuildRequires: golang(golang.org/x/crypto/ssh/terminal)
 BuildRequires: golang(gopkg.in/inconshreveable/log15.v2)
+BuildRequires: golang(gopkg.in/inconshreveable/log15.v2/term)
 BuildRequires: golang(gopkg.in/flosch/pongo2.v3)
 BuildRequires: golang(gopkg.in/tomb.v2)
 BuildRequires: golang(gopkg.in/yaml.v2)
@@ -140,15 +141,16 @@ Requires: golang(github.com/syndtr/gocapability/capability)
 Requires: golang(golang.org/x/crypto/scrypt)
 Requires: golang(golang.org/x/crypto/ssh/terminal)
 Requires: golang(gopkg.in/inconshreveable/log15.v2)
+Requires: golang(gopkg.in/inconshreveable/log15.v2/term)
 Requires: golang(gopkg.in/flosch/pongo2.v3)
 Requires: golang(gopkg.in/tomb.v2)
 Requires: golang(gopkg.in/yaml.v2)
 
-Provides: golang(%{import_path}/lxd) = %{version}-%{release}
-Provides: golang(%{import_path}/lxc) = %{version}-%{release}
-Provides: golang(%{import_path}/fuidshift) = %{version}-%{release}
+Provides: golang(%{import_path}) = %{version}-%{release}
+Provides: golang(%{import_path}/lxd/types) = %{version}-%{release}
 Provides: golang(%{import_path}/shared) = %{version}-%{release}
-Provides: golang(%{import_path}/shared/gnuflag} = %{version}-%{release}
+Provides: golang(%{import_path}/shared/api) = %{version}-%{release}
+Provides: golang(%{import_path}/shared/gnuflag) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/i18n) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/ioprogress) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/logging) = %{version}-%{release}
@@ -335,11 +337,11 @@ popd
 %doc doc/*
 
 %changelog
-* Tue Dec 27 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.7-1
+* Tue Dec 27 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.7-1
 - Version bump to lxd-2.7, set LXD_DIR to mode 0711
 - Add lxc-to-lxd migration script to lxd-tools package
 
-* Wed Dec 14 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.6.2-5
+* Wed Dec 14 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.6.2-5
 - Don't restrict world access to /var/{lib,log}/lxd
 
 * Sun Dec 11 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.6.2-4
