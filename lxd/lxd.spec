@@ -337,6 +337,9 @@ popd
 %doc doc/*
 
 %changelog
+* Thu Jan 26 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.8-1
+- Version bump to lxd-2.8, fix some gopath requires/provides
+
 * Tue Dec 27 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.7-1
 - Version bump to lxd-2.7, set LXD_DIR to mode 0711
 - Add lxc-to-lxd migration script to lxd-tools package
