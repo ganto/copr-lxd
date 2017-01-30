@@ -1,6 +1,6 @@
 Name:       lxcfs
-Version:    2.0.5
-Release:    3%{?dist}
+Version:    2.0.6
+Release:    1%{?dist}
 Summary:    FUSE filesystem for LXC
 
 License:    ASL 2.0
@@ -65,7 +65,7 @@ rm -f %{buildroot}%{_libdir}/liblxcfs.la
 
 %files
 %defattr(-,root,root)
-%doc AUTHORS
+%doc AUTHORS README NEWS
 %license COPYING
 %{_bindir}/*
 %{_datadir}/lxc
@@ -87,7 +87,7 @@ rm -f %{buildroot}%{_libdir}/liblxcfs.la
 /%{_lib}/security/pam_cgfs.so
 
 %changelog
-* Fri Dec 09 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.0.5-3
+* Fri Dec 09 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.0.5-3
 - Many spec file cleanups/fixes reported by rpmlint
 
 * Fri Dec 09 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.0.5-2
