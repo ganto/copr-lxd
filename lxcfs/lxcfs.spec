@@ -87,6 +87,9 @@ rm -f %{buildroot}%{_libdir}/liblxcfs.la
 /%{_lib}/security/pam_cgfs.so
 
 %changelog
+* Mon Jan 30 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.0.6-1
+- Version bump to lxcfs-2.0.6, add README and NEWS to documentation
+
 * Fri Dec 09 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.0.5-3
 - Many spec file cleanups/fixes reported by rpmlint
 
