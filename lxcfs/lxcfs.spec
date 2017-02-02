@@ -1,12 +1,14 @@
 Name:       lxcfs
 Version:    2.0.6
-Release:    1%{?dist}
+Release:    2%{?dist}
 Summary:    FUSE filesystem for LXC
 
 License:    ASL 2.0
 URL:        https://linuxcontainers.org
 Source0:    https://linuxcontainers.org/downloads/%{name}/%{name}-%{version}.tar.gz
 Patch0:     lxcfs-2.0.5-Fix-systemd-unit-directory.patch
+Patch1:     lxcfs-2.0.5-Fix-fusermount-path.patch
+Patch2:     lxcfs-2.0.6-Limit-memswlimit-by-TotalSwap.patch
 
 BuildRequires: autoconf
 BuildRequires: automake
@@ -41,8 +43,7 @@ all controllers or for any controllers listed on the
 command line.
 
 %prep
-%setup -q
-%patch0 -p1
+%autosetup -n %{name}-%{version} -p1
 
 %build
 autoreconf --force --install
@@ -87,7 +88,7 @@ rm -f %{buildroot}%{_libdir}/liblxcfs.la
 /%{_lib}/security/pam_cgfs.so
 
 %changelog
-* Mon Jan 30 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.0.6-1
+* Mon Jan 30 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.0.6-1
 - Version bump to lxcfs-2.0.6, add README and NEWS to documentation
 
 * Fri Dec 09 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.0.5-3
