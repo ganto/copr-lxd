@@ -1,0 +1,57 @@
+From 0f1d2a8fb21f11d23b5aff9469d131d88e716eba Mon Sep 17 00:00:00 2001
+From: Christian Brauner <christian.brauner@ubuntu.com>
+Date: Thu, 16 Feb 2017 21:21:40 +0100
+Subject: [PATCH] lxd/main_init: small fixes
+
+Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+---
+ lxd/main_init.go | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
+
+diff --git a/lxd/main_init.go b/lxd/main_init.go
+index d831113..6fe86c4 100644
+--- a/lxd/main_init.go
++++ b/lxd/main_init.go
+@@ -202,10 +202,6 @@ func cmdInit() error {
+ 			if *argStorageCreateLoop != -1 && *argStorageCreateDevice != "" {
+ 				return fmt.Errorf("Only one of --storage-create-device or --storage-create-loop can be specified with the 'zfs' backend.")
+ 			}
+-
+-			if *argStorageDataset == "" {
+-				return fmt.Errorf("--storage-pool must be specified with the 'zfs' backend.")
+-			}
+ 		}
+ 
+ 		if *argNetworkAddress == "" {
+@@ -251,6 +247,7 @@ func cmdInit() error {
+ 		}
+ 
+ 		if storageSetup && storageBackend == "zfs" {
++			storageLoopSize = -1
+ 			if askBool("Create a new ZFS pool (yes/no) [default=yes]? ", "yes") {
+ 				if askBool("Would you like to use an existing block device (yes/no) [default=no]? ", "no") {
+ 					deviceExists := func(path string) error {
+@@ -366,11 +363,21 @@ they otherwise would.
+ 		storageConfig := map[string]string{}
+ 		if storageDevice != "" {
+ 			storageConfig["source"] = storageDevice
+-		} else if storageDataset != "" {
++			// The user probably wants to give the storage pool a
++			// custom name.
++			if storageDataset != "" {
++				storagePool = storageDataset
++			}
++		} else if storageDataset != "" && storageBackend == "zfs" && storageLoopSize < 0 {
+ 			storageConfig["source"] = storageDataset
+ 		}
+ 
+-		if storageBackend != "dir" && storageLoopSize != 0 {
++		if storageBackend != "dir" && storageLoopSize > 0 {
++			// The user probably wants to give the storage pool a
++			// custom name.
++			if storageDataset != "" {
++				storagePool = storageDataset
++			}
+ 			storageConfig["size"] = strconv.FormatInt(storageLoopSize, 10) + "GB"
+ 		}
+ 

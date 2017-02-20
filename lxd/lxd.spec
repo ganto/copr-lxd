@@ -23,18 +23,18 @@
 
 # lxd
 %global git0 https://%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 034658fc012771d6dfe48b37d2a346073d62f4f8
+%global commit 8f0ebc5201334107c1e5e56ea8c0629e6b5acced
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 
 # lxc-go
 %global git1 https://%{provider}.%{provider_tld}/%{project}/go-lxc
-%global commit1 f2d9e73627b6ad2cd714da6dc935aeed1b23258b
+%global commit1 aeb7ce45882f9bcad11b421c9e612b4010e820bc
 %global shortcommit1 %(c=%{commit1}; echo ${c:0:7})
 %global import_path1 gopkg.in/lxc/go-lxc.v2
 
 Name:    lxd
-Version: 2.8
+Version: 2.9.1
 Release: 1%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
@@ -47,6 +47,8 @@ Source4: lxd.lxd-containers.service
 Source5: lxd.dnsmasq
 Source6: lxd.logrotate
 Source7: shutdown
+Patch0: %{name}-%{version}-Init-Fix-regressions-caused-by-storage-work.patch
+Patch1: %{name}-%{version}-main_init-small-fixes.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
@@ -205,6 +207,8 @@ This package contains user documentation.
 
 %prep
 %setup -q -n %{repo}-%{commit}
+%patch0 -p1
+%patch1 -p1
 
 # unpack go-lxc
 tar zxf %{SOURCE1}
@@ -337,7 +341,7 @@ popd
 %doc doc/*
 
 %changelog
-* Thu Jan 26 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.8-1
+* Thu Jan 26 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.8-1
 - Version bump to lxd-2.8, fix some gopath requires/provides
 
 * Tue Dec 27 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.7-1
