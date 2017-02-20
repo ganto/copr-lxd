@@ -341,6 +341,14 @@ popd
 %doc doc/*
 
 %changelog
+* Mon Feb 20 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.9.1-1
+- Version bump to lxd-2.9.1
+- Update embedded go-lxc to commit aeb7ce4
+
+* Mon Feb 20 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch>
+- Version bump to lxd-2.9.1
+- Update embedded go-lxc to commit aeb7ce4
+
 * Thu Jan 26 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.8-1
 - Version bump to lxd-2.8, fix some gopath requires/provides
 
