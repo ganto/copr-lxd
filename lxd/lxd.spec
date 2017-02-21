@@ -23,7 +23,7 @@
 
 # lxd
 %global git0 https://%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 8f0ebc5201334107c1e5e56ea8c0629e6b5acced
+%global commit 0b86249e6130c0f3c75dda1f1d2a8cb3e352d7c4
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 
@@ -34,7 +34,7 @@
 %global import_path1 gopkg.in/lxc/go-lxc.v2
 
 Name:    lxd
-Version: 2.9.1
+Version: 2.9.2
 Release: 1%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
@@ -47,8 +47,6 @@ Source4: lxd.lxd-containers.service
 Source5: lxd.dnsmasq
 Source6: lxd.logrotate
 Source7: shutdown
-Patch0: %{name}-%{version}-Init-Fix-regressions-caused-by-storage-work.patch
-Patch1: %{name}-%{version}-main_init-small-fixes.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
@@ -207,8 +205,6 @@ This package contains user documentation.
 
 %prep
 %setup -q -n %{repo}-%{commit}
-%patch0 -p1
-%patch1 -p1
 
 # unpack go-lxc
 tar zxf %{SOURCE1}
@@ -341,11 +337,7 @@ popd
 %doc doc/*
 
 %changelog
-* Mon Feb 20 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.9.1-1
-- Version bump to lxd-2.9.1
-- Update embedded go-lxc to commit aeb7ce4
-
-* Mon Feb 20 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch>
+* Mon Feb 20 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.9.1-1
 - Version bump to lxd-2.9.1
 - Update embedded go-lxc to commit aeb7ce4
 
