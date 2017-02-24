@@ -337,6 +337,9 @@ popd
 %doc doc/*
 
 %changelog
+* Fri Feb 24 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.9.3-1
+- Version bump to lxd-2.9.3
+
 * Tue Feb 21 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.9.2-1
 - Version bump to lxd-2.9.2
 
