@@ -23,7 +23,7 @@
 
 # lxd
 %global git0 https://%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 0b86249e6130c0f3c75dda1f1d2a8cb3e352d7c4
+%global commit c618e320301f00f7257b6c9752ae59f90447d430
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 
@@ -34,7 +34,7 @@
 %global import_path1 gopkg.in/lxc/go-lxc.v2
 
 Name:    lxd
-Version: 2.9.2
+Version: 2.9.3
 Release: 1%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
@@ -337,7 +337,7 @@ popd
 %doc doc/*
 
 %changelog
-* Tue Feb 21 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.9.2-1
+* Tue Feb 21 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.9.2-1
 - Version bump to lxd-2.9.2
 
 * Mon Feb 20 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.9.1-1
