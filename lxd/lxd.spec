@@ -23,7 +23,7 @@
 
 # lxd
 %global git0 https://%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit c618e320301f00f7257b6c9752ae59f90447d430
+%global commit 8b7c40d28e834037c2f4e02f77ccc75df08c690a
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 
@@ -34,7 +34,7 @@
 %global import_path1 gopkg.in/lxc/go-lxc.v2
 
 Name:    lxd
-Version: 2.9.3
+Version: 2.10
 Release: 1%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
@@ -61,7 +61,7 @@ BuildRequires: help2man
 BuildRequires: golang(github.com/dustinkirkland/golang-petname)
 BuildRequires: golang(github.com/golang/protobuf/proto)
 BuildRequires: golang(github.com/gorilla/mux)
-BuildRequires: golang(github.com/gorilla/websocket)
+BuildRequires: golang(github.com/gorilla/websocket) >= 1.1.0
 BuildRequires: golang(github.com/gosexy/gettext)
 BuildRequires: golang(github.com/mattn/go-runewidth)
 BuildRequires: golang(github.com/mattn/go-sqlite3)
@@ -112,7 +112,7 @@ Summary: %{summary} - Source Libraries
 BuildRequires: golang(github.com/dustinkirkland/golang-petname)
 BuildRequires: golang(github.com/golang/protobuf/proto)
 BuildRequires: golang(github.com/gorilla/mux)
-BuildRequires: golang(github.com/gorilla/websocket)
+BuildRequires: golang(github.com/gorilla/websocket) >= 1.1.0
 BuildRequires: golang(github.com/gosexy/gettext)
 BuildRequires: golang(github.com/mattn/go-runewidth)
 BuildRequires: golang(github.com/mattn/go-sqlite3)
@@ -131,7 +131,7 @@ BuildRequires: golang(gopkg.in/yaml.v2)
 Requires: golang(github.com/dustinkirkland/golang-petname)
 Requires: golang(github.com/golang/protobuf/proto)
 Requires: golang(github.com/gorilla/mux)
-Requires: golang(github.com/gorilla/websocket)
+Requires: golang(github.com/gorilla/websocket) >= 1.1.0
 Requires: golang(github.com/gosexy/gettext)
 Requires: golang(github.com/mattn/go-runewidth)
 Requires: golang(github.com/mattn/go-sqlite3)
