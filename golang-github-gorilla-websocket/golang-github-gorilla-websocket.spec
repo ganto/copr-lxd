@@ -150,6 +150,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/Godeps/_workspace:%{gopath}
 %endif
 
 %changelog
+* Thu Mar 02 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 1.1.0-1
+- Version bump to latest tagged release v1.1.0
+
 * Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 0-0.10.gitc45a635
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
