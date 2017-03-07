@@ -23,7 +23,7 @@
 
 # lxd
 %global git0 https://%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 8b7c40d28e834037c2f4e02f77ccc75df08c690a
+%global commit 978a9e0b85cd5e3ebfbd64c648a0d88edfec7c63
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 
@@ -34,7 +34,7 @@
 %global import_path1 gopkg.in/lxc/go-lxc.v2
 
 Name:    lxd
-Version: 2.10
+Version: 2.10.1
 Release: 1%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
@@ -337,10 +337,10 @@ popd
 %doc doc/*
 
 %changelog
-* Thu Mar 02 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.10-1
+* Thu Mar 02 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.10-1
 - Version bump to lxd-2.10, bump websocket dependency due to build errors
 
-* Fri Feb 24 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.9.3-1
+* Fri Feb 24 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.9.3-1
 - Version bump to lxd-2.9.3
 
 * Tue Feb 21 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.9.2-1
