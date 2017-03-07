@@ -337,6 +337,9 @@ popd
 %doc doc/*
 
 %changelog
+* Tue Mar 07 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.10.1-1
+- Version bump to lxd-2.10.1
+
 * Thu Mar 02 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.10-1
 - Version bump to lxd-2.10, bump websocket dependency due to build errors
 
