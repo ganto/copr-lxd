@@ -1,0 +1,23 @@
+From f5bb7eb5aa39b52714ebedc21d26964634d4717d Mon Sep 17 00:00:00 2001
+From: Christian Brauner <christian.brauner@ubuntu.com>
+Date: Thu, 9 Mar 2017 03:26:59 +0100
+Subject: lvm: use -ff with vgremove
+
+Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+---
+ lxd/storage_lvm.go | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lxd/storage_lvm.go b/lxd/storage_lvm.go
+index 2784156..15a6bfa 100644
+--- a/lxd/storage_lvm.go
++++ b/lxd/storage_lvm.go
+@@ -623,7 +623,7 @@ func (s *storageLvm) StoragePoolDelete() error {
+ 
+ 	poolName := s.getOnDiskPoolName()
+ 	// Remove the volume group.
+-	output, err := shared.RunCommand("vgremove", "-f", poolName)
++	output, err := shared.RunCommand("vgremove", "-ff", poolName)
+ 	if err != nil {
+ 		return fmt.Errorf("Failed to destroy the volume group for the lvm storage pool: %s.", output)
+ 	}
