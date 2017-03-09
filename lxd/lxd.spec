@@ -339,6 +339,10 @@ popd
 %doc doc/*
 
 %changelog
+* Thu Mar 09 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.11-1
+- Version bump to lxd-2.11
+- Add 'lvm-use-ff-with-vgremove.patch' from lxd-2.11-0ubuntu2
+
 * Tue Mar 07 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.10.1-1
 - Version bump to lxd-2.10.1
 
