@@ -23,7 +23,7 @@
 
 # lxd
 %global git0 https://%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 978a9e0b85cd5e3ebfbd64c648a0d88edfec7c63
+%global commit 1c9db72a5a6533159c16c35e23b006506c8c6725
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 
@@ -34,7 +34,7 @@
 %global import_path1 gopkg.in/lxc/go-lxc.v2
 
 Name:    lxd
-Version: 2.10.1
+Version: 2.11
 Release: 1%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
@@ -47,6 +47,7 @@ Source4: lxd.lxd-containers.service
 Source5: lxd.dnsmasq
 Source6: lxd.logrotate
 Source7: shutdown
+Patch0: %{name}-%{version}-lvm-use-ff-with-vgremove.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
@@ -205,6 +206,7 @@ This package contains user documentation.
 
 %prep
 %setup -q -n %{repo}-%{commit}
+%patch0 -p1
 
 # unpack go-lxc
 tar zxf %{SOURCE1}
@@ -227,7 +229,7 @@ export GOPATH=$(pwd):$(pwd)/Godeps/_workspace:%{gopath}
 
 # generate man-pages
 help2man bin/lxd -n "The container hypervisor - daemon" --no-info > lxd.1
-help2man bin/lxc -n "The container hypervisor - client" --no-info > lxc.1
+bin/lxc manpage .
 help2man bin/fuidshift -n "uid/gid shifter" --no-info > fuidshift.1
 help2man scripts/lxc-to-lxd -n "Convert LXC containers to LXD" --no-info --version-string=%{version} > lxc-to-lxd.1
 
@@ -267,7 +269,7 @@ install -p -m 755 %{SOURCE7} %{buildroot}/usr/lib/%{name}/shutdown
 # install man-pages
 install -d %{buildroot}%{_mandir}/man1
 cp -p lxd.1 %{buildroot}%{_mandir}/man1/
-cp -p lxc.1 %{buildroot}%{_mandir}/man1/
+cp -p lxc*.1 %{buildroot}%{_mandir}/man1/
 cp -p fuidshift.1 %{buildroot}%{_mandir}/man1/
 cp -p lxc-to-lxd.1 %{buildroot}%{_mandir}/man1/
 
@@ -306,7 +308,7 @@ popd
 %{_unitdir}/*
 %dir /usr/lib/%{name}
 /usr/lib/%{name}/*
-%{_mandir}/man1/%{name}.1.gz
+%{_mandir}/man1/%{name}*.1.gz
 %dir %{_localstatedir}/log/%{name}
 %defattr(-, root, root, 0711)
 %dir %{_localstatedir}/lib/%{name}
@@ -323,7 +325,7 @@ popd
 %license COPYING
 %{_bindir}/lxc
 %{_datadir}/bash-completion/completions/lxd-client
-%{_mandir}/man1/lxc.1.gz
+%{_mandir}/man1/lxc*.1.gz
 
 %files tools
 %license COPYING
@@ -337,7 +339,7 @@ popd
 %doc doc/*
 
 %changelog
-* Tue Mar 07 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.10.1-1
+* Tue Mar 07 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.10.1-1
 - Version bump to lxd-2.10.1
 
 * Thu Mar 02 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.10-1
