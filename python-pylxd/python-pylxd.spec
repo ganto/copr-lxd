@@ -11,8 +11,8 @@
 %global debug_package %{nil}
 
 Name:           python-%{pkgname}
-Version:        2.2.2
-Release:        2%{?dist}
+Version:        2.2.3
+Release:        1%{?dist}
 Summary:        Python library for interacting with LXD REST API
 
 Group:          Development/Languages
@@ -195,7 +195,7 @@ nosetests-%{python3_version} pylxd
 %endif
 
 %changelog
-* Tue Dec 20 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.2.2-2
+* Tue Dec 20 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.2.2-2
 - Fix runtime dependencies, fix arch, generate separate test packages
 
 * Mon Dec 19 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.2.2-1
