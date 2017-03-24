@@ -195,6 +195,9 @@ nosetests-%{python3_version} pylxd
 %endif
 
 %changelog
+* Fri Mar 24 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.2.3-1
+- Version bump to pylxd-2.2.3
+
 * Tue Dec 20 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.2.2-2
 - Fix runtime dependencies, fix arch, generate separate test packages
 
