@@ -23,18 +23,18 @@
 
 # lxd
 %global git0 https://%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 1c9db72a5a6533159c16c35e23b006506c8c6725
+%global commit 252469fca7992ec3a99fcfd4bdbc77df07a551da
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 
 # lxc-go
 %global git1 https://%{provider}.%{provider_tld}/%{project}/go-lxc
-%global commit1 aeb7ce45882f9bcad11b421c9e612b4010e820bc
+%global commit1 8304875cc3423823032ec93556beee076c6ba687
 %global shortcommit1 %(c=%{commit1}; echo ${c:0:7})
 %global import_path1 gopkg.in/lxc/go-lxc.v2
 
 Name:    lxd
-Version: 2.11
+Version: 2.12
 Release: 1%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
@@ -47,7 +47,6 @@ Source4: lxd.lxd-containers.service
 Source5: lxd.dnsmasq
 Source6: lxd.logrotate
 Source7: shutdown
-Patch0: %{name}-%{version}-lvm-use-ff-with-vgremove.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
@@ -84,7 +83,7 @@ Requires: iptables
 Requires: lxd-client = %{version}-%{release}
 Requires: lxcfs
 Requires: rsync
-Requires: shadow-utils
+Requires: shadow-utils >= 4.1.5
 Requires: squashfs-tools
 Requires: tar
 Requires: xz
@@ -206,7 +205,6 @@ This package contains user documentation.
 
 %prep
 %setup -q -n %{repo}-%{commit}
-%patch0 -p1
 
 # unpack go-lxc
 tar zxf %{SOURCE1}
@@ -339,7 +337,7 @@ popd
 %doc doc/*
 
 %changelog
-* Thu Mar 09 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.11-1
+* Thu Mar 09 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.11-1
 - Version bump to lxd-2.11
 - Add 'lvm-use-ff-with-vgremove.patch' from lxd-2.11-0ubuntu2
 
