@@ -337,6 +337,10 @@ popd
 %doc doc/*
 
 %changelog
+* Fri Mar 24 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.12-1
+- Version bump to lxd-2.12
+- Update embedded go-lxc to commit 8304875
+
 * Thu Mar 09 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.11-1
 - Version bump to lxd-2.11
 - Add 'lvm-use-ff-with-vgremove.patch' from lxd-2.11-0ubuntu2
