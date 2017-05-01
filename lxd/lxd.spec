@@ -23,7 +23,7 @@
 
 # lxd
 %global git0 https://%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 252469fca7992ec3a99fcfd4bdbc77df07a551da
+%global commit 1bb639fae75d5ce9bb0315eabf9acfe46a8c72a3
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 
@@ -34,7 +34,7 @@
 %global import_path1 gopkg.in/lxc/go-lxc.v2
 
 Name:    lxd
-Version: 2.12
+Version: 2.13
 Release: 1%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
@@ -60,6 +60,7 @@ BuildRequires: help2man
 %if ! 0%{?with_bundled}
 BuildRequires: golang(github.com/dustinkirkland/golang-petname)
 BuildRequires: golang(github.com/golang/protobuf/proto)
+BuildRequires: golang(github.com/gorilla/context)
 BuildRequires: golang(github.com/gorilla/mux)
 BuildRequires: golang(github.com/gorilla/websocket) >= 1.1.0
 BuildRequires: golang(github.com/gosexy/gettext)
@@ -111,6 +112,7 @@ Summary: %{summary} - Source Libraries
 %if 0%{?with_check}
 BuildRequires: golang(github.com/dustinkirkland/golang-petname)
 BuildRequires: golang(github.com/golang/protobuf/proto)
+BuildRequires: golang(github.com/gorilla/context)
 BuildRequires: golang(github.com/gorilla/mux)
 BuildRequires: golang(github.com/gorilla/websocket) >= 1.1.0
 BuildRequires: golang(github.com/gosexy/gettext)
@@ -130,6 +132,7 @@ BuildRequires: golang(gopkg.in/yaml.v2)
 
 Requires: golang(github.com/dustinkirkland/golang-petname)
 Requires: golang(github.com/golang/protobuf/proto)
+Requires: golang(github.com/gorilla/context)
 Requires: golang(github.com/gorilla/mux)
 Requires: golang(github.com/gorilla/websocket) >= 1.1.0
 Requires: golang(github.com/gosexy/gettext)
@@ -147,12 +150,15 @@ Requires: golang(gopkg.in/tomb.v2)
 Requires: golang(gopkg.in/yaml.v2)
 
 Provides: golang(%{import_path}) = %{version}-%{release}
+Provides: golang(%{import_path}/client) = %{version}-%{release}
+Provides: golang(%{import_path}/lxc/config) = %{version}-%{release}
 Provides: golang(%{import_path}/lxd/types) = %{version}-%{release}
 Provides: golang(%{import_path}/shared) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/api) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/gnuflag) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/i18n) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/ioprogress) = %{version}-%{release}
+Provides: golang(%{import_path}/shared/logger) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/logging) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/osarch) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/simplestreams) = %{version}-%{release}
@@ -224,11 +230,13 @@ export GOPATH=$(pwd):$(pwd)/Godeps/_workspace:%{gopath}
 %gobuild -o bin/lxd %{import_path}/lxd
 %gobuild -o bin/lxc %{import_path}/lxc
 %gobuild -o bin/fuidshift %{import_path}/fuidshift
+%gobuild -o bin/lxd-benchmark %{import_path}/test/lxd-benchmark
 
 # generate man-pages
 help2man bin/lxd -n "The container hypervisor - daemon" --no-info > lxd.1
 bin/lxc manpage .
 help2man bin/fuidshift -n "uid/gid shifter" --no-info > fuidshift.1
+help2man bin/lxd-benchmark -n "The container lightervisor - benchmark" --no-info --version-string=%{version} --no-discard-stderr > lxd-benchmark.1
 help2man scripts/lxc-to-lxd -n "Convert LXC containers to LXD" --no-info --version-string=%{version} > lxc-to-lxd.1
 
 %pre
@@ -242,6 +250,7 @@ install -d %{buildroot}%{_bindir}
 install -p -m 755 bin/lxd %{buildroot}%{_bindir}/lxd
 install -p -m 755 bin/lxc %{buildroot}%{_bindir}/lxc
 install -p -m 755 bin/fuidshift %{buildroot}%{_bindir}/fuidshift
+install -p -m 755 bin/lxd-benchmark %{buildroot}%{_bindir}/lxd-benchmark
 
 # install extra script
 install -p -m 755 scripts/lxc-to-lxd %{buildroot}%{_bindir}/lxc-to-lxd
@@ -269,6 +278,7 @@ install -d %{buildroot}%{_mandir}/man1
 cp -p lxd.1 %{buildroot}%{_mandir}/man1/
 cp -p lxc*.1 %{buildroot}%{_mandir}/man1/
 cp -p fuidshift.1 %{buildroot}%{_mandir}/man1/
+cp -p lxd-benchmark.1 %{buildroot}%{_mandir}/man1/
 cp -p lxc-to-lxd.1 %{buildroot}%{_mandir}/man1/
 
 # cache and log directories
@@ -328,8 +338,10 @@ popd
 %files tools
 %license COPYING
 %{_bindir}/fuidshift
+%{_bindir}/lxd-benchmark
 %{_bindir}/lxc-to-lxd
 %{_mandir}/man1/fuidshift.1.gz
+%{_mandir}/man1/lxd-benchmark.1.gz
 %{_mandir}/man1/lxc-to-lxd.1.gz
 
 %files doc
@@ -337,7 +349,7 @@ popd
 %doc doc/*
 
 %changelog
-* Fri Mar 24 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.12-1
+* Fri Mar 24 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.12-1
 - Version bump to lxd-2.12
 - Update embedded go-lxc to commit 8304875
 
