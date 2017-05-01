@@ -349,6 +349,10 @@ popd
 %doc doc/*
 
 %changelog
+* Mon May 01 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.13-1
+- Version bump to lxd-2.13
+- Add lxc-benchmark to lxd-tools package
+
 * Fri Mar 24 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.12-1
 - Version bump to lxd-2.12
 - Update embedded go-lxc to commit 8304875
