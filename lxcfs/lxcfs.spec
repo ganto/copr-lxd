@@ -87,6 +87,9 @@ rm -f %{buildroot}%{_libdir}/liblxcfs.la
 /%{_lib}/security/pam_cgfs.so
 
 %changelog
+* Wed May 17 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.0.7-1
+- Version bump to lxcfs-2.0.7
+
 * Thu Feb 02 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.0.6-2
 - Add patches to fix fusermount path and swap size reporting
 
