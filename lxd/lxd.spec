@@ -350,6 +350,11 @@ popd
 %doc doc/*
 
 %changelog
+* Wed Jun 07 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.14-1
+- Version bump to lxd-2.14
+- Update embedded go-lxc to commit de2c8bf
+- "infinity" for NOFILE doesn't work, set fixed value
+
 * Mon May 01 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.13-1
 - Version bump to lxd-2.13
 - Add lxc-benchmark to lxd-tools package
