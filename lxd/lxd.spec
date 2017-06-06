@@ -23,18 +23,18 @@
 
 # lxd
 %global git0 https://%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 1bb639fae75d5ce9bb0315eabf9acfe46a8c72a3
+%global commit 4c32a1ff7267d4934870e2444dc1394fea5a78e4
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 
 # lxc-go
 %global git1 https://%{provider}.%{provider_tld}/%{project}/go-lxc
-%global commit1 8304875cc3423823032ec93556beee076c6ba687
+%global commit1 de2c8bfd65a78752d6a70b4ad99114c6969363b0
 %global shortcommit1 %(c=%{commit1}; echo ${c:0:7})
 %global import_path1 gopkg.in/lxc/go-lxc.v2
 
 Name:    lxd
-Version: 2.13
+Version: 2.14
 Release: 1%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
@@ -155,6 +155,7 @@ Provides: golang(%{import_path}/lxc/config) = %{version}-%{release}
 Provides: golang(%{import_path}/lxd/types) = %{version}-%{release}
 Provides: golang(%{import_path}/shared) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/api) = %{version}-%{release}
+Provides: golang(%{import_path}/shared/cmd) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/gnuflag) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/i18n) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/ioprogress) = %{version}-%{release}
@@ -349,7 +350,7 @@ popd
 %doc doc/*
 
 %changelog
-* Mon May 01 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.13-1
+* Mon May 01 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.13-1
 - Version bump to lxd-2.13
 - Add lxc-benchmark to lxd-tools package
 
