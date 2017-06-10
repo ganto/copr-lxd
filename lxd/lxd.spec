@@ -35,7 +35,7 @@
 
 Name:    lxd
 Version: 2.14
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
 URL: https://linuxcontainers.org/lxd
@@ -47,6 +47,10 @@ Source4: lxd.lxd-containers.service
 Source5: lxd.dnsmasq
 Source6: lxd.logrotate
 Source7: shutdown
+Patch0: lxd-2.14-storage-insert-driver-correctly.patch
+Patch1: lxd-2.14-patches-fix-upgrade.patch
+Patch2: lxd-2.14-zfs-fix-container-copy.patch
+Patch3: lxd-2.14-storage-copy-move-bugfixes.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
@@ -211,7 +215,7 @@ using an image based workflow and with support for live migration.
 This package contains user documentation.
 
 %prep
-%setup -q -n %{repo}-%{commit}
+%autosetup -n %{repo}-%{commit} -p1
 
 # unpack go-lxc
 tar zxf %{SOURCE1}
@@ -350,7 +354,7 @@ popd
 %doc doc/*
 
 %changelog
-* Wed Jun 07 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.14-1
+* Wed Jun 07 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.14-1
 - Version bump to lxd-2.14
 - Update embedded go-lxc to commit de2c8bf
 - "infinity" for NOFILE doesn't work, set fixed value
