@@ -354,6 +354,9 @@ popd
 %doc doc/*
 
 %changelog
+* Sat Jun 10 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.14-2
+- Add some upstream patches according to lxd-2.14-0ubuntu3
+
 * Wed Jun 07 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.14-1
 - Version bump to lxd-2.14
 - Update embedded go-lxc to commit de2c8bf
