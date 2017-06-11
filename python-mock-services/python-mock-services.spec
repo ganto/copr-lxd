@@ -8,7 +8,7 @@
 
 Name:           python-%{pkgname}
 Version:        0.3
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Easy way of mocking API Services
 License:        MIT
 URL:            https://pypi.python.org/pypi/%{pkgname}
