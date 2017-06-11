@@ -104,6 +104,9 @@ PYTHONPATH=. nosetests-%{python3_version}
 %endif
 
 %changelog
+* Sun Jun 11 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.3-4
+- Trigger rebuild to investigate build failure on fc26
+
 * Fri Dec 30 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.3-3
 - Rebuild for Python 3.6
 
