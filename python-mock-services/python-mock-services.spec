@@ -8,11 +8,12 @@
 
 Name:           python-%{pkgname}
 Version:        0.3
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Easy way of mocking API Services
 License:        MIT
 URL:            https://pypi.python.org/pypi/%{pkgname}
 Source0:        https://github.com/novafloss/%{pkgname}/archive/%{version}/%{pkgname}-%{version}.tar.gz
+Patch0:         mock-services-0.3-real_send-does-not-exist-in-MockerCore.patch
 BuildArch:      noarch
 
 %description
@@ -69,7 +70,10 @@ Python 3 version.
 %endif
 
 %prep
-%autosetup -n %{pkgname}-%{version}
+%setup -n %{pkgname}-%{version}
+%if 0%{?fedora} >= 26
+%patch0 -p1
+%endif
 
 %build
 %py2_build
@@ -104,13 +108,13 @@ PYTHONPATH=. nosetests-%{python3_version}
 %endif
 
 %changelog
-* Sun Jun 11 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.3-4
+* Sun Jun 11 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 0.3-4
 - Trigger rebuild to investigate build failure on fc26
 
-* Fri Dec 30 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.3-3
+* Fri Dec 30 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 0.3-3
 - Rebuild for Python 3.6
 
-* Sun Dec 18 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.3-2
+* Sun Dec 18 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 0.3-2
 - Fix python-requests-mock dependency definition
 
 * Sun Dec 18 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 0.3-1

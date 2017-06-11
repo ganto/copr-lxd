@@ -1,0 +1,22 @@
+From 714c3cf6b85810d2e4fecff8567dee9625564065 Mon Sep 17 00:00:00 2001
+From: atx <atx@drecks-provider.de>
+Date: Sun, 5 Feb 2017 12:37:53 +0100
+Subject: [PATCH] _real_send does not exist in MockerCore
+
+---
+ mock_services/http_mock.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mock_services/http_mock.py b/mock_services/http_mock.py
+index a4ed5d3..8b94751 100644
+--- a/mock_services/http_mock.py
++++ b/mock_services/http_mock.py
+@@ -25,7 +25,7 @@ def __init__(self, *args, **kwargs):
+         self._adapter = _adapter
+ 
+     def is_started(self):
+-        return self._real_send
++        return self._last_send
+ 
+     def set_allow_external(self, allow):
+         """Set flag to authorize external calls when no matching mock.
