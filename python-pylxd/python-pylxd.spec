@@ -1,4 +1,6 @@
-%global pkgname pylxd
+%global pkgname     pylxd
+%global commit      fcc823d3cd27e4c8147cbcb4345fef8425aa8e8d
+%global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 # RHEL doesn't support python-3
 %if 0%{?rhel} && 0%{?rhel} <= 7
@@ -11,14 +13,15 @@
 %global debug_package %{nil}
 
 Name:           python-%{pkgname}
-Version:        2.2.3
-Release:        1%{?dist}
+Version:        2.2.4
+Release:        1.git%{shortcommit}%{?dist}
 Summary:        Python library for interacting with LXD REST API
 
 Group:          Development/Languages
 License:        ASL 2.0
 URL:            https://linuxcontainers.org/lxd
-Source0:        https://github.com/lxc/%{pkgname}/archive/%{version}/%{pkgname}-%{version}.tar.gz
+Source0:        https://github.com/lxc/%{pkgname}/archive/%{commit}/%{pkgname}-%{shortcommit}.tar.gz
+Patch0:         pylxd-2.2.4-Add-minimal-PKG-INFO.patch
 BuildArch:      noarch
 
 %description
@@ -139,7 +142,7 @@ Tests for the pylxd Python 3 library.
 %endif
 
 %prep
-%autosetup -n %{pkgname}-%{version} -p1
+%autosetup -n %{pkgname}-%{commit} -p1
 
 %build
 %py2_build
@@ -163,7 +166,7 @@ nosetests-%{python3_version} pylxd
 %endif
 
 %files -n python2-%{pkgname}
-%doc AUTHORS README.rst
+%doc README.rst
 %license LICENSE
 %{python2_sitelib}/%{pkgname}-%{version}-py%{python2_version}.egg-info
 %{python2_sitelib}/%{pkgname}
@@ -181,7 +184,7 @@ nosetests-%{python3_version} pylxd
 
 %if %{with python3}
 %files -n python3-%{pkgname}
-%doc AUTHORS README.rst
+%doc README.rst
 %license LICENSE
 %{python3_sitelib}/%{pkgname}-%{version}-py%{python3_version}.egg-info
 %{python3_sitelib}/%{pkgname}
@@ -195,7 +198,7 @@ nosetests-%{python3_version} pylxd
 %endif
 
 %changelog
-* Fri Mar 24 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.2.3-1
+* Fri Mar 24 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.2.3-1
 - Version bump to pylxd-2.2.3
 
 * Tue Dec 20 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.2.2-2
