@@ -198,6 +198,9 @@ nosetests-%{python3_version} pylxd
 %endif
 
 %changelog
+* Tue Jun 13 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.2.4-1.gitfcc823d
+- Add fix for lxc/pylxd#230, build from unmerged/released source
+
 * Fri Mar 24 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.2.3-1
 - Version bump to pylxd-2.2.3
 
