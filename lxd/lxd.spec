@@ -35,7 +35,7 @@
 
 Name:    lxd
 Version: 2.15
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
 URL: https://linuxcontainers.org/lxd
@@ -353,7 +353,7 @@ popd
 %doc doc/*
 
 %changelog
-* Mon Jul 03 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.15-1
+* Mon Jul 03 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.15-1
 - Version bump to lxd-2.15
 - Add upstream patches according to lxd-2.15-0ubuntu4
 
