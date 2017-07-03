@@ -25,11 +25,11 @@
 # https://github.com/gorilla/websocket
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          3ab3a8b8831546bd18fd182c20687ca853b2bb13
+%global commit          ea4d1f681babbce9545c9c5f3d5194a789c89f5b
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           golang-%{provider}-%{project}-%{repo}
-Version:        1.1.0
+Version:        1.2.0
 Release:        1%{?dist}
 Summary:        A WebSocket implementation for Go
 License:        BSD
@@ -150,7 +150,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/Godeps/_workspace:%{gopath}
 %endif
 
 %changelog
-* Thu Mar 02 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 1.1.0-1
+* Thu Mar 02 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 1.1.0-1
 - Version bump to latest tagged release v1.1.0
 
 * Fri Feb 10 2017 Fedora Release Engineering <releng@fedoraproject.org> - 0-0.10.gitc45a635
