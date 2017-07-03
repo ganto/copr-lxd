@@ -353,6 +353,9 @@ popd
 %doc doc/*
 
 %changelog
+* Mon Jul 03 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.15-2
+- Rebuild with latest golang-github-gorilla-websocket
+
 * Mon Jul 03 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.15-1
 - Version bump to lxd-2.15
 - Add upstream patches according to lxd-2.15-0ubuntu4
