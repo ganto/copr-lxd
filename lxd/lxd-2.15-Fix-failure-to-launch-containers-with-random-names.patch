@@ -1,0 +1,38 @@
+commit 1f1fd9d053901798a4051a9b1858aa10db328078
+Author: Stéphane Graber <stgraber@ubuntu.com>
+Date:   Wed Jun 28 14:47:05 2017 -0400
+
+    Fix failure to launch containers with random names
+    
+    Signed-off-by: Stéphane Graber <stgraber@ubuntu.com>
+
+diff --git a/lxc/init.go b/lxc/init.go
+index 1a7934e..254da69 100644
+--- a/lxc/init.go
++++ b/lxc/init.go
+@@ -310,7 +310,8 @@ func (c *initCmd) create(conf *config.Config, args []string) (lxd.ContainerServe
+ 
+ 	if len(containers) == 1 && name == "" {
+ 		fields := strings.Split(containers[0], "/")
+-		fmt.Printf(i18n.G("Container name is: %s")+"\n", fields[len(fields)-1])
++		name = fields[len(fields)-1]
++		fmt.Printf(i18n.G("Container name is: %s")+"\n", name)
+ 	}
+ 
+ 	// Validate the network setup
+diff --git a/test/suites/basic.sh b/test/suites/basic.sh
+index 318303b..19b7885 100644
+--- a/test/suites/basic.sh
++++ b/test/suites/basic.sh
+@@ -201,9 +201,9 @@ test_basic_usage() {
+   [ ! -d "${LXD_DIR}/snapshots/bar" ]
+ 
+   # Test randomly named container creation
+-  lxc init testimage
++  lxc launch testimage
+   RDNAME=$(lxc list | tail -n2 | grep ^\| | awk '{print $2}')
+-  lxc delete "${RDNAME}"
++  lxc delete -f "${RDNAME}"
+ 
+   # Test "nonetype" container creation
+   wait_for "${LXD_ADDR}" my_curl -X POST "https://${LXD_ADDR}/1.0/containers" \

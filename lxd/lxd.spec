@@ -23,7 +23,7 @@
 
 # lxd
 %global git0 https://%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 4c32a1ff7267d4934870e2444dc1394fea5a78e4
+%global commit d4dac03f25d40fabf71d5d6dba0732481d55248c
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 
@@ -34,8 +34,8 @@
 %global import_path1 gopkg.in/lxc/go-lxc.v2
 
 Name:    lxd
-Version: 2.14
-Release: 2%{?dist}
+Version: 2.15
+Release: 1%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
 URL: https://linuxcontainers.org/lxd
@@ -47,10 +47,11 @@ Source4: lxd.lxd-containers.service
 Source5: lxd.dnsmasq
 Source6: lxd.logrotate
 Source7: shutdown
-Patch0: lxd-2.14-storage-insert-driver-correctly.patch
-Patch1: lxd-2.14-patches-fix-upgrade.patch
-Patch2: lxd-2.14-zfs-fix-container-copy.patch
-Patch3: lxd-2.14-storage-copy-move-bugfixes.patch
+Patch0: lxd-2.15-lxc-publish-Fix-fingerprint-printing.patch
+Patch1: lxd-2.15-Fix-failure-to-launch-containers-with-random-names.patch
+Patch2: lxd-2.15-client-Fix-handling-of-public-LXD-remote.patch
+Patch3: lxd-2.15-cancel-Fix-crash-if-no-canceler-is-setup.patch
+Patch4: lxd-2.15-client-Commonize-error-handling.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
@@ -68,7 +69,6 @@ BuildRequires: golang(github.com/gorilla/context)
 BuildRequires: golang(github.com/gorilla/mux)
 BuildRequires: golang(github.com/gorilla/websocket) >= 1.1.0
 BuildRequires: golang(github.com/gosexy/gettext)
-BuildRequires: golang(github.com/mattn/go-runewidth)
 BuildRequires: golang(github.com/mattn/go-sqlite3)
 BuildRequires: golang(github.com/olekukonko/tablewriter)
 BuildRequires: golang(github.com/pborman/uuid)
@@ -120,7 +120,6 @@ BuildRequires: golang(github.com/gorilla/context)
 BuildRequires: golang(github.com/gorilla/mux)
 BuildRequires: golang(github.com/gorilla/websocket) >= 1.1.0
 BuildRequires: golang(github.com/gosexy/gettext)
-BuildRequires: golang(github.com/mattn/go-runewidth)
 BuildRequires: golang(github.com/mattn/go-sqlite3)
 BuildRequires: golang(github.com/olekukonko/tablewriter)
 BuildRequires: golang(github.com/pborman/uuid)
@@ -140,7 +139,6 @@ Requires: golang(github.com/gorilla/context)
 Requires: golang(github.com/gorilla/mux)
 Requires: golang(github.com/gorilla/websocket) >= 1.1.0
 Requires: golang(github.com/gosexy/gettext)
-Requires: golang(github.com/mattn/go-runewidth)
 Requires: golang(github.com/mattn/go-sqlite3)
 Requires: golang(github.com/olekukonko/tablewriter)
 Requires: golang(github.com/pborman/uuid)
@@ -159,6 +157,7 @@ Provides: golang(%{import_path}/lxc/config) = %{version}-%{release}
 Provides: golang(%{import_path}/lxd/types) = %{version}-%{release}
 Provides: golang(%{import_path}/shared) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/api) = %{version}-%{release}
+Provides: golang(%{import_path}/shared/cancel) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/cmd) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/gnuflag) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/i18n) = %{version}-%{release}
@@ -354,7 +353,7 @@ popd
 %doc doc/*
 
 %changelog
-* Sat Jun 10 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.14-2
+* Sat Jun 10 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.14-2
 - Add some upstream patches according to lxd-2.14-0ubuntu3
 
 * Wed Jun 07 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.14-1

@@ -1,0 +1,30 @@
+commit aa537ee16a9ead35510ca98663d173e24165293e
+Author: Stéphane Graber <stgraber@ubuntu.com>
+Date:   Wed Jun 28 00:22:36 2017 -0400
+
+    lxc/publish: Fix fingerprint printing
+    
+    Signed-off-by: Stéphane Graber <stgraber@ubuntu.com>
+
+diff --git a/lxc/publish.go b/lxc/publish.go
+index 4254d4e..2d4a9e1 100644
+--- a/lxc/publish.go
++++ b/lxc/publish.go
+@@ -169,8 +169,6 @@ func (c *publishCmd) run(conf *config.Config, args []string) error {
+ 		properties[entry[0]] = entry[1]
+ 	}
+ 
+-	var fp string
+-
+ 	// We should only set the properties field if there actually are any.
+ 	// Otherwise we will only delete any existing properties on publish.
+ 	// This is something which only direct callers of the API are allowed to
+@@ -247,7 +245,7 @@ func (c *publishCmd) run(conf *config.Config, args []string) error {
+ 		}
+ 	}
+ 
+-	fmt.Printf(i18n.G("Container published with fingerprint: %s")+"\n", fp)
++	fmt.Printf(i18n.G("Container published with fingerprint: %s")+"\n", fingerprint)
+ 
+ 	return nil
+ }

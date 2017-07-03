@@ -1,0 +1,50 @@
+commit 74b8229f53cac9b8a937c414cbcbf27441b9112f
+Author: Stéphane Graber <stgraber@ubuntu.com>
+Date:   Wed Jun 28 15:41:25 2017 -0400
+
+    client: Fix handling of public LXD remote
+    
+    Public LXD remotes don't advertise their bound addresses, but they are
+    still reachable using the URL that was used for the remote.
+    
+    Closes #3464
+    
+    Signed-off-by: Stéphane Graber <stgraber@ubuntu.com>
+
+diff --git a/client/lxd.go b/client/lxd.go
+index df1c6db..742ad2f 100644
+--- a/client/lxd.go
++++ b/client/lxd.go
+@@ -36,11 +36,11 @@ func (r *ProtocolLXD) GetConnectionInfo() (*ConnectionInfo, error) {
+ 	info.Protocol = "lxd"
+ 
+ 	urls := []string{}
+-	if len(r.server.Environment.Addresses) > 0 {
+-		if r.httpProtocol == "https" {
+-			urls = append(urls, r.httpHost)
+-		}
++	if r.httpProtocol == "https" {
++		urls = append(urls, r.httpHost)
++	}
+ 
++	if len(r.server.Environment.Addresses) > 0 {
+ 		for _, addr := range r.server.Environment.Addresses {
+ 			url := fmt.Sprintf("https://%s", addr)
+ 			if !shared.StringInSlice(url, urls) {
+diff --git a/test/suites/remote.sh b/test/suites/remote.sh
+index d53ee12..79a168a 100644
+--- a/test/suites/remote.sh
++++ b/test/suites/remote.sh
+@@ -117,7 +117,12 @@ test_remote_usage() {
+   lxc_remote image show lxd2:bar | grep -q "public: true"
+   ! lxc_remote image show bar
+   lxc_remote delete pub
++
++  # test spawn from public server
++  lxc_remote remote add lxd2-public "${LXD2_ADDR}" --public --accept-certificate
++  lxc_remote init lxd2-public:bar pub
+   lxc_remote image delete lxd2:bar
++  lxc_remote delete pub
+ 
+   # Double launch to test if the image downloads only once.
+   lxc_remote init localhost:testimage lxd2:c1 &
