@@ -150,6 +150,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/Godeps/_workspace:%{gopath}
 %endif
 
 %changelog
+* Mon Jul 03 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 1.2.0-1
+- Version bump to release v1.2.0
+
+
 * Thu Mar 02 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 1.1.0-1
 - Version bump to latest tagged release v1.1.0
 
