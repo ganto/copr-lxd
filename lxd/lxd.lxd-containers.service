@@ -8,8 +8,8 @@ Requires=lxd.socket
 Type=oneshot
 ExecStart=/usr/bin/lxd activateifneeded
 ExecStop=/usr/lib/lxd/shutdown
-TimeoutStartSec=30s
-TimeoutStopSec=90s
+TimeoutStartSec=600s
+TimeoutStopSec=600s
 RemainAfterExit=yes
 
 [Install]

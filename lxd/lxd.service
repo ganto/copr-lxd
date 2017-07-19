@@ -8,8 +8,8 @@ Documentation=man:lxd(1)
 ExecStart=/usr/bin/lxd --group lxd --logfile=/var/log/lxd/lxd.log
 ExecStartPost=/usr/bin/lxd waitready --timeout=600
 KillMode=process
-TimeoutStartSec=600
-TimeoutStopSec=40
+TimeoutStartSec=600s
+TimeoutStopSec=30s
 Restart=on-failure
 LimitNOFILE=1048576
 LimitNPROC=infinity
