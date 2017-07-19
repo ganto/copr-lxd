@@ -35,7 +35,7 @@
 
 Name:    lxd
 Version: 2.15
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
 URL: https://linuxcontainers.org/lxd
@@ -52,6 +52,14 @@ Patch1: lxd-2.15-Fix-failure-to-launch-containers-with-random-names.patch
 Patch2: lxd-2.15-client-Fix-handling-of-public-LXD-remote.patch
 Patch3: lxd-2.15-cancel-Fix-crash-if-no-canceler-is-setup.patch
 Patch4: lxd-2.15-client-Commonize-error-handling.patch
+Patch5: lxd-2.15-lxc-config-Removal-of-multiple-devices-at-once.patch
+Patch6: lxd-2.15-network-Dont-fail-on-non-process-PIDs.patch
+Patch7: lxd-2.15-config-Try-to-be-clever-about-colon-in-snapshots.patch
+Patch8: lxd-2.15-import-keep-volatile-keys.patch
+Patch9: lxd-2.15-import-remove-last-dependency-on-symlink.patch
+Patch10: lxd-2.15-Better-handle-errors-in-memory-reporting.patch
+Patch11: lxd-2.15-client-Dont-live-migrate-stopped-containers.patch
+Patch12: lxd-2.15-Fix-file-push-pull-with-names-containing-spaces.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
@@ -353,7 +361,7 @@ popd
 %doc doc/*
 
 %changelog
-* Mon Jul 03 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.15-2
+* Mon Jul 03 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.15-2
 - Rebuild with latest golang-github-gorilla-websocket
 
 * Mon Jul 03 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.15-1

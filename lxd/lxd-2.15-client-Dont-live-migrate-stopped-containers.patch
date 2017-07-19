@@ -1,0 +1,31 @@
+commit 5134b57faa22827e4272c96e08dbaec5a9124b2b
+Author: Stéphane Graber <stgraber@ubuntu.com>
+Date:   Mon Jul 3 01:25:39 2017 -0400
+
+    client: Don't live migrate stopped containers
+    
+    Signed-off-by: Stéphane Graber <stgraber@ubuntu.com>
+
+diff --git a/client/lxd_containers.go b/client/lxd_containers.go
+index 24a7f2d..0e102d2 100644
+--- a/client/lxd_containers.go
++++ b/client/lxd_containers.go
+@@ -203,7 +203,6 @@ func (r *ProtocolLXD) CopyContainer(source ContainerServer, container api.Contai
+ 		ContainerPut: container.Writable(),
+ 	}
+ 	req.Source.BaseImage = container.Config["volatile.base_image"]
+-	req.Source.Live = container.StatusCode == api.Running
+ 
+ 	// Process the copy arguments
+ 	if args != nil {
+@@ -221,6 +220,10 @@ func (r *ProtocolLXD) CopyContainer(source ContainerServer, container api.Contai
+ 		req.Source.ContainerOnly = args.ContainerOnly
+ 	}
+ 
++	if req.Source.Live {
++		req.Source.Live = container.StatusCode == api.Running
++	}
++
+ 	// Optimization for the local copy case
+ 	if r == source {
+ 		// Local copy source fields
