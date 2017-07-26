@@ -348,6 +348,9 @@ popd
 %doc doc/*
 
 %changelog
+* Wed Jul 26 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.16-1
+- Version bump to lxd-2.16
+
 * Wed Jul 19 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.15-3
 - Tweak timeouts for systemd units
 - Add upstream patches according to lxd-2.15-0ubuntu6
