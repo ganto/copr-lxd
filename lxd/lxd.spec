@@ -23,7 +23,7 @@
 
 # lxd
 %global git0 https://%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit d4dac03f25d40fabf71d5d6dba0732481d55248c
+%global commit 4b2236160bc2b226ebf79a1e12e4b87b86d3cb7b
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 
@@ -34,8 +34,8 @@
 %global import_path1 gopkg.in/lxc/go-lxc.v2
 
 Name:    lxd
-Version: 2.15
-Release: 3%{?dist}
+Version: 2.16
+Release: 1%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
 URL: https://linuxcontainers.org/lxd
@@ -47,19 +47,6 @@ Source4: lxd.lxd-containers.service
 Source5: lxd.dnsmasq
 Source6: lxd.logrotate
 Source7: shutdown
-Patch0: lxd-2.15-lxc-publish-Fix-fingerprint-printing.patch
-Patch1: lxd-2.15-Fix-failure-to-launch-containers-with-random-names.patch
-Patch2: lxd-2.15-client-Fix-handling-of-public-LXD-remote.patch
-Patch3: lxd-2.15-cancel-Fix-crash-if-no-canceler-is-setup.patch
-Patch4: lxd-2.15-client-Commonize-error-handling.patch
-Patch5: lxd-2.15-lxc-config-Removal-of-multiple-devices-at-once.patch
-Patch6: lxd-2.15-network-Dont-fail-on-non-process-PIDs.patch
-Patch7: lxd-2.15-config-Try-to-be-clever-about-colon-in-snapshots.patch
-Patch8: lxd-2.15-import-keep-volatile-keys.patch
-Patch9: lxd-2.15-import-remove-last-dependency-on-symlink.patch
-Patch10: lxd-2.15-Better-handle-errors-in-memory-reporting.patch
-Patch11: lxd-2.15-client-Dont-live-migrate-stopped-containers.patch
-Patch12: lxd-2.15-Fix-file-push-pull-with-names-containing-spaces.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
@@ -361,7 +348,7 @@ popd
 %doc doc/*
 
 %changelog
-* Wed Jul 19 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.15-3
+* Wed Jul 19 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.15-3
 - Tweak timeouts for systemd units
 - Add upstream patches according to lxd-2.15-0ubuntu6
 
