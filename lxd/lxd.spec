@@ -35,7 +35,7 @@
 
 Name:    lxd
 Version: 2.17
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
 URL: https://linuxcontainers.org/lxd
@@ -322,7 +322,7 @@ popd
 %{_unitdir}/*
 %dir /usr/lib/%{name}
 /usr/lib/%{name}/*
-%{_mandir}/man1/%{name}*.1.gz
+%{_mandir}/man1/%{name}.1.gz
 %dir %{_localstatedir}/log/%{name}
 %defattr(-, root, root, 0711)
 %dir %{_localstatedir}/lib/%{name}
@@ -339,7 +339,7 @@ popd
 %license COPYING
 %{_bindir}/lxc
 %{_datadir}/bash-completion/completions/lxd-client
-%{_mandir}/man1/lxc*.1.gz
+%{_mandir}/man1/lxc.*1.gz
 
 %files tools
 %license COPYING
@@ -355,7 +355,7 @@ popd
 %doc doc/*
 
 %changelog
-* Thu Aug 24 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.17-1
+* Thu Aug 24 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.17-1
 - Version bump to lxd-2.17
 
 * Wed Jul 26 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.16-1
