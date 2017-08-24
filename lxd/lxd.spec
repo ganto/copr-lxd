@@ -23,7 +23,7 @@
 
 # lxd
 %global git0 https://%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 4b2236160bc2b226ebf79a1e12e4b87b86d3cb7b
+%global commit 829bdacefa01d495208c51547b98b3221d48d413
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 
@@ -34,7 +34,7 @@
 %global import_path1 gopkg.in/lxc/go-lxc.v2
 
 Name:    lxd
-Version: 2.16
+Version: 2.17
 Release: 1%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
@@ -53,6 +53,7 @@ ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
 # If go_compiler is not set to 1, there is no virtual provide. Use golang instead.
 BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
 
+BuildRequires: libacl-devel
 BuildRequires: pkgconfig(lxc)
 BuildRequires: systemd-units
 BuildRequires: help2man
@@ -149,7 +150,11 @@ Requires: golang(gopkg.in/yaml.v2)
 Provides: golang(%{import_path}) = %{version}-%{release}
 Provides: golang(%{import_path}/client) = %{version}-%{release}
 Provides: golang(%{import_path}/lxc/config) = %{version}-%{release}
+Provides: golang(%{import_path}/lxd/db) = %{version}-%{release}
+Provides: golang(%{import_path}/lxd/state) = %{version}-%{release}
+Provides: golang(%{import_path}/lxd/sys) = %{version}-%{release}
 Provides: golang(%{import_path}/lxd/types) = %{version}-%{release}
+Provides: golang(%{import_path}/lxd/util) = %{version}-%{release}
 Provides: golang(%{import_path}/shared) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/api) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/cancel) = %{version}-%{release}
@@ -177,6 +182,8 @@ building other packages which use the import path
 
 %package client
 Summary: %{summary} - Client 
+
+Requires: xdelta
 
 %description client
 LXD offers a REST API to remotely manage containers over the network,
@@ -348,7 +355,7 @@ popd
 %doc doc/*
 
 %changelog
-* Wed Jul 26 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.16-1
+* Wed Jul 26 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.16-1
 - Version bump to lxd-2.16
 
 * Wed Jul 19 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.15-3
