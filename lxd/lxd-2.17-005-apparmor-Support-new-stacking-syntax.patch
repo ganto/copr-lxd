@@ -1,0 +1,33 @@
+commit 09e0667c0fa3280d8370cee479de8a9cc938e187
+Author: Stéphane Graber <stgraber@ubuntu.com>
+Date:   Fri Aug 25 13:50:07 2017 -0400
+
+    apparmor: Support new stacking syntax
+    
+    Signed-off-by: Stéphane Graber <stgraber@ubuntu.com>
+
+diff --git a/lxd/apparmor.go b/lxd/apparmor.go
+index 47a1881..f2920f4 100644
+--- a/lxd/apparmor.go
++++ b/lxd/apparmor.go
+@@ -347,6 +347,7 @@ func getAAProfileContent(c container) string {
+   deny /sys/kernel/security?*{,/**} wklx,
+   deny /sys/kernel?*{,/**} wklx,
+ `
++		profile += fmt.Sprintf("  change_profile -> \":%s:*\",\n", AANamespace(c))
+ 		profile += fmt.Sprintf("  change_profile -> \":%s://*\",\n", AANamespace(c))
+ 	} else {
+ 		profile += "\n  ### Feature: apparmor stacking (not present)\n"
+diff --git a/test/suites/basic.sh b/test/suites/basic.sh
+index 0b18c13..5ea57c7 100644
+--- a/test/suites/basic.sh
++++ b/test/suites/basic.sh
+@@ -365,7 +365,7 @@ test_basic_usage() {
+ 
+     if [ "${MAJOR}" -gt "1" ] || ([ "${MAJOR}" = "1" ] && [ "${MINOR}" -ge "2" ]); then
+       aa_namespace="lxd-lxd-apparmor-test_<$(echo "${LXD_DIR}" | sed -e 's/\//-/g' -e 's/^.//')>"
+-      aa-status | grep ":${aa_namespace}://unconfined"
++      aa-status | grep -q ":${aa_namespace}:unconfined" || aa-status | grep -q ":${aa_namespace}://unconfined"
+       lxc stop lxd-apparmor-test --force
+       ! aa-status | grep -q ":${aa_namespace}:"
+     else

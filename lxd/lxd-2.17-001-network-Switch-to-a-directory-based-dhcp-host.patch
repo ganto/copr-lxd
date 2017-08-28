@@ -1,0 +1,250 @@
+commit 16f0aecd767da415c961161f1931be150d795365
+Author: Stéphane Graber <stgraber@ubuntu.com>
+Date:   Thu Aug 24 00:46:40 2017 -0400
+
+    network: Switch to a directory based dhcp-host
+    
+    This avoids potential race conditions by tracking every container individually.
+    
+    Closes #3694
+    
+    Signed-off-by: Stéphane Graber <stgraber@ubuntu.com>
+
+diff --git a/lxd/container_lxc.go b/lxd/container_lxc.go
+index 1be8133..5779dc1 100644
+--- a/lxd/container_lxc.go
++++ b/lxd/container_lxc.go
+@@ -399,7 +399,7 @@ func containerLXCCreate(s *state.State, args db.ContainerArgs) (container, error
+ 	}
+ 
+ 	// Update lease files
+-	networkUpdateStatic(s, "")
++	networkUpdateStatic(s, "", c.name)
+ 
+ 	logger.Info("Created container", ctxMap)
+ 
+@@ -2879,7 +2879,7 @@ func (c *containerLXC) Delete() error {
+ 	}
+ 
+ 	// Update network files
+-	networkUpdateStatic(c.state, "")
++	networkUpdateStatic(c.state, "", c.name)
+ 	for k, m := range c.expandedDevices {
+ 		if m["type"] != "nic" || m["nictype"] != "bridged" || (m["ipv4.address"] == "" && m["ipv6.address"] == "") {
+ 			continue
+@@ -4073,7 +4073,7 @@ func (c *containerLXC) Update(args db.ContainerArgs, userRequested bool) error {
+ 	}
+ 
+ 	if needsUpdate {
+-		networkUpdateStatic(c.state, "")
++		networkUpdateStatic(c.state, "", c.name)
+ 	}
+ 
+ 	// Success, update the closure to mark that the changes should be kept.
+diff --git a/lxd/networks.go b/lxd/networks.go
+index aa5ba2e..62012e8 100644
+--- a/lxd/networks.go
++++ b/lxd/networks.go
+@@ -1199,14 +1199,6 @@ func (n *network) Start() error {
+ 		}
+ 		dnsmasqCmd = append(dnsmasqCmd, fmt.Sprintf("--conf-file=%s", shared.VarPath("networks", n.name, "dnsmasq.raw")))
+ 
+-		// Create DHCP hosts file
+-		if !shared.PathExists(shared.VarPath("networks", n.name, "dnsmasq.hosts")) {
+-			err = ioutil.WriteFile(shared.VarPath("networks", n.name, "dnsmasq.hosts"), []byte(""), 0644)
+-			if err != nil {
+-				return err
+-			}
+-		}
+-
+ 		// Attempt to drop privileges
+ 		for _, user := range []string{"lxd", "nobody"} {
+ 			_, err := shared.UserId(user)
+@@ -1218,6 +1210,14 @@ func (n *network) Start() error {
+ 			break
+ 		}
+ 
++		// Create DHCP hosts directory
++		if !shared.PathExists(shared.VarPath("networks", n.name, "dnsmasq.hosts")) {
++			err = os.MkdirAll(shared.VarPath("networks", n.name, "dnsmasq.hosts"), 0755)
++			if err != nil {
++				return err
++			}
++		}
++
+ 		// Check for dnsmasq
+ 		_, err := exec.LookPath("dnsmasq")
+ 		if err != nil {
+@@ -1231,7 +1231,7 @@ func (n *network) Start() error {
+ 		}
+ 
+ 		// Update the static leases
+-		err = networkUpdateStatic(n.state, n.name)
++		err = networkUpdateStatic(n.state, n.name, "")
+ 		if err != nil {
+ 			return err
+ 		}
+diff --git a/lxd/networks_utils.go b/lxd/networks_utils.go
+index 9c67ec4..6022efd 100644
+--- a/lxd/networks_utils.go
++++ b/lxd/networks_utils.go
+@@ -724,22 +724,29 @@ func networkKillDnsmasq(name string, reload bool) error {
+ 	return nil
+ }
+ 
+-func networkUpdateStatic(s *state.State, name string) error {
++func networkUpdateStatic(s *state.State, networkName string, containerName string) error {
+ 	// Get all the containers
+-	containers, err := db.ContainersList(s.DB, db.CTypeRegular)
+-	if err != nil {
+-		return err
++	containers := []string{}
++	if containerName == "" {
++		var err error
++		containers, err = db.ContainersList(s.DB, db.CTypeRegular)
++		if err != nil {
++			return err
++		}
++	} else {
++		containers = []string{containerName}
+ 	}
+ 
++	// Get all the networks
+ 	networks := []string{}
+-	if name == "" {
+-		// Get all the networks
++	if networkName == "" {
++		var err error
+ 		networks, err = db.Networks(s.DB)
+ 		if err != nil {
+ 			return err
+ 		}
+ 	} else {
+-		networks = []string{name}
++		networks = []string{networkName}
+ 	}
+ 
+ 	// Build a list of dhcp host entries
+@@ -779,7 +786,7 @@ func networkUpdateStatic(s *state.State, name string) error {
+ 		entries, _ := entries[network]
+ 
+ 		// Skip networks we don't manage (or don't have DHCP enabled)
+-		if !shared.PathExists(shared.VarPath("networks", network, "dnsmasq.hosts")) {
++		if !shared.PathExists(shared.VarPath("networks", network, "dnsmasq.pid")) {
+ 			continue
+ 		}
+ 
+@@ -789,14 +796,32 @@ func networkUpdateStatic(s *state.State, name string) error {
+ 		}
+ 		config := n.Config()
+ 
+-		// Update the file
+-		if entries == nil {
+-			err := ioutil.WriteFile(shared.VarPath("networks", network, "dnsmasq.hosts"), []byte(""), 0)
++		// Clean everything up on resets
++		if containerName == "" {
++			// Wipe everything clean
++			entries, err := ioutil.ReadDir(shared.VarPath("networks", network, "dnsmasq.hosts"))
+ 			if err != nil {
+ 				return err
+ 			}
++
++			for _, entry := range entries {
++				err = os.Remove(shared.VarPath("networks", network, "dnsmasq.hosts", entry.Name()))
++				if err != nil {
++					return err
++				}
++			}
++		}
++
++		if containerName != "" && len(entries) == 0 {
++			// Wipe the one container clean
++			if shared.PathExists(shared.VarPath("networks", network, "dnsmasq.hosts", containerName)) {
++				err = os.Remove(shared.VarPath("networks", network, "dnsmasq.hosts", containerName))
++				if err != nil {
++					return err
++				}
++			}
+ 		} else {
+-			lines := []string{}
++			// Apply the changes
+ 			for _, entry := range entries {
+ 				hwaddr := entry[0]
+ 				cName := entry[1]
+@@ -806,7 +831,7 @@ func networkUpdateStatic(s *state.State, name string) error {
+ 				line := hwaddr
+ 
+ 				if ipv4Address != "" {
+-					line += fmt.Sprintf(",id:*,%s", ipv4Address)
++					line += fmt.Sprintf(",%s", ipv4Address)
+ 				}
+ 
+ 				if ipv6Address != "" {
+@@ -821,12 +846,10 @@ func networkUpdateStatic(s *state.State, name string) error {
+ 					continue
+ 				}
+ 
+-				lines = append(lines, line)
+-			}
+-
+-			err := ioutil.WriteFile(shared.VarPath("networks", network, "dnsmasq.hosts"), []byte(strings.Join(lines, "\n")+"\n"), 0)
+-			if err != nil {
+-				return err
++				err := ioutil.WriteFile(shared.VarPath("networks", network, "dnsmasq.hosts", cName), []byte(line+"\n"), 0644)
++				if err != nil {
++					return err
++				}
+ 			}
+ 		}
+ 
+diff --git a/lxd/patches.go b/lxd/patches.go
+index c35e9fa..ebf1e0d 100644
+--- a/lxd/patches.go
++++ b/lxd/patches.go
+@@ -47,6 +47,7 @@ var patches = []patch{
+ 	{name: "storage_api_insert_zfs_driver", run: patchStorageApiInsertZfsDriver},
+ 	{name: "storage_zfs_noauto", run: patchStorageZFSnoauto},
+ 	{name: "storage_zfs_volume_size", run: patchStorageZFSVolumeSize},
++	{name: "network_dnsmasq_hosts", run: patchNetworkDnsmasqHosts},
+ }
+ 
+ type patch struct {
+@@ -2596,3 +2597,23 @@ func patchUpdateFromV30(d *Daemon) error {
+ 
+ 	return nil
+ }
++
++func patchNetworkDnsmasqHosts(name string, d *Daemon) error {
++	// Get the list of networks
++	networks, err := db.Networks(d.db)
++	if err != nil {
++		return err
++	}
++
++	for _, network := range networks {
++		// Remove the old dhcp-hosts file (will be re-generated on startup)
++		if shared.PathExists(shared.VarPath("networks", network, "dnsmasq.hosts")) {
++			err = os.Remove(shared.VarPath("networks", network, "dnsmasq.hosts"))
++			if err != nil {
++				return err
++			}
++		}
++	}
++
++	return nil
++}
+diff --git a/test/suites/network.sh b/test/suites/network.sh
+index 69432cf..c13b863 100644
+--- a/test/suites/network.sh
++++ b/test/suites/network.sh
+@@ -30,8 +30,8 @@ test_network() {
+   v6_addr="$(lxc network get lxdt$$ ipv4.address | cut -d/ -f1)00"
+   lxc config device set nettest eth0 ipv4.address "${v4_addr}"
+   lxc config device set nettest eth0 ipv6.address "${v6_addr}"
+-  grep -q "${v4_addr}.*nettest" "${LXD_DIR}/networks/lxdt$$/dnsmasq.hosts"
+-  grep -q "${v6_addr}.*nettest" "${LXD_DIR}/networks/lxdt$$/dnsmasq.hosts"
++  grep -q "${v4_addr}.*nettest" "${LXD_DIR}/networks/lxdt$$/dnsmasq.hosts/nettest"
++  grep -q "${v6_addr}.*nettest" "${LXD_DIR}/networks/lxdt$$/dnsmasq.hosts/nettest"
+   lxc start nettest
+ 
+   SUCCESS=0

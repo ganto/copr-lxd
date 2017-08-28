@@ -1,0 +1,43 @@
+commit 0c138f1f5a6f676b400ac41d091795543770cf67
+Author: Stéphane Graber <stgraber@ubuntu.com>
+Date:   Thu Aug 24 15:40:58 2017 -0400
+
+    shared: Fix growing of buf in GroupId
+    
+    Closes #3711
+    
+    Signed-off-by: Stéphane Graber <stgraber@ubuntu.com>
+
+diff --git a/shared/util_linux.go b/shared/util_linux.go
+index 02f3808..33747f1 100644
+--- a/shared/util_linux.go
++++ b/shared/util_linux.go
+@@ -411,7 +411,6 @@ func GroupId(name string) (int, error) {
+ 	if buf == nil {
+ 		return -1, fmt.Errorf("allocation failed")
+ 	}
+-	defer C.free(buf)
+ 
+ 	cname := C.CString(name)
+ 	defer C.free(unsafe.Pointer(cname))
+@@ -422,7 +421,7 @@ again:
+ 		(*C.char)(buf),
+ 		bufSize,
+ 		&result)
+-	if rv < 0 {
++	if rv != 0 {
+ 		// OOM killer will take care of us if we end up doing this too
+ 		// often.
+ 		if errno == syscall.ERANGE {
+@@ -434,8 +433,11 @@ again:
+ 			buf = tmp
+ 			goto again
+ 		}
++
++		C.free(buf)
+ 		return -1, fmt.Errorf("failed group lookup: %s", syscall.Errno(rv))
+ 	}
++	C.free(buf)
+ 
+ 	if result == nil {
+ 		return -1, fmt.Errorf("unknown group %s", name)

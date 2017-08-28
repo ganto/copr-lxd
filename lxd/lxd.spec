@@ -35,7 +35,7 @@
 
 Name:    lxd
 Version: 2.17
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
 URL: https://linuxcontainers.org/lxd
@@ -47,6 +47,11 @@ Source4: lxd.lxd-containers.service
 Source5: lxd.dnsmasq
 Source6: lxd.logrotate
 Source7: shutdown
+Patch0: lxd-2.17-001-network-Switch-to-a-directory-based-dhcp-host.patch
+Patch1: lxd-2.17-002-network-Make-dnsmasq-quiet-when-not-in-debug-mode.patch
+Patch2: lxd-2.17-003-shared-Fix-growing-of-buf-in-GroupId.patch
+Patch3: lxd-2.17-004-Fix-live-migration-bad-URL-in-dumpsuccess.patch
+Patch4: lxd-2.17-005-apparmor-Support-new-stacking-syntax.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
@@ -355,7 +360,7 @@ popd
 %doc doc/*
 
 %changelog
-* Thu Aug 24 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.17-2
+* Thu Aug 24 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.17-2
 - Fix man pages wrongly added to multiple packages
 
 * Thu Aug 24 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.17-1
