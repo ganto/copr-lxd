@@ -360,6 +360,9 @@ popd
 %doc doc/*
 
 %changelog
+* Mon Aug 28 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.17-3
+- Add upstream patches according to lxd-2.17-0ubuntu2
+
 * Thu Aug 24 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.17-2
 - Fix man pages wrongly added to multiple packages
 
