@@ -359,6 +359,10 @@ popd
 %doc doc/*
 
 %changelog
+* Thu Sep 21 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.18-1
+- Version bump to lxd-2.18
+- Update embedded go-lxc to commit 89b06ca
+
 * Mon Aug 28 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.17-3
 - Add upstream patches according to lxd-2.17-0ubuntu2
 
