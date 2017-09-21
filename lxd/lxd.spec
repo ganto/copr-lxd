@@ -23,19 +23,19 @@
 
 # lxd
 %global git0 https://%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 829bdacefa01d495208c51547b98b3221d48d413
+%global commit 1d616bf6637feae442ad30d76e8c678608d8fb40
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 
 # lxc-go
 %global git1 https://%{provider}.%{provider_tld}/%{project}/go-lxc
-%global commit1 de2c8bfd65a78752d6a70b4ad99114c6969363b0
+%global commit1 89b06ca6fad6daea5a72a1f47e69e39716c46198
 %global shortcommit1 %(c=%{commit1}; echo ${c:0:7})
 %global import_path1 gopkg.in/lxc/go-lxc.v2
 
 Name:    lxd
-Version: 2.17
-Release: 3%{?dist}
+Version: 2.18
+Release: 1%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
 URL: https://linuxcontainers.org/lxd
@@ -47,11 +47,6 @@ Source4: lxd.lxd-containers.service
 Source5: lxd.dnsmasq
 Source6: lxd.logrotate
 Source7: shutdown
-Patch0: lxd-2.17-001-network-Switch-to-a-directory-based-dhcp-host.patch
-Patch1: lxd-2.17-002-network-Make-dnsmasq-quiet-when-not-in-debug-mode.patch
-Patch2: lxd-2.17-003-shared-Fix-growing-of-buf-in-GroupId.patch
-Patch3: lxd-2.17-004-Fix-live-migration-bad-URL-in-dumpsuccess.patch
-Patch4: lxd-2.17-005-apparmor-Support-new-stacking-syntax.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
@@ -156,16 +151,20 @@ Provides: golang(%{import_path}) = %{version}-%{release}
 Provides: golang(%{import_path}/client) = %{version}-%{release}
 Provides: golang(%{import_path}/lxc/config) = %{version}-%{release}
 Provides: golang(%{import_path}/lxd/db) = %{version}-%{release}
+Provides: golang(%{import_path}/lxd/db/query) = %{version}-%{release}
+Provides: golang(%{import_path}/lxd/db/schema) = %{version}-%{release}
 Provides: golang(%{import_path}/lxd/state) = %{version}-%{release}
 Provides: golang(%{import_path}/lxd/sys) = %{version}-%{release}
 Provides: golang(%{import_path}/lxd/types) = %{version}-%{release}
 Provides: golang(%{import_path}/lxd/util) = %{version}-%{release}
+Provides: golang(%{import_path}/lxd-benchmark/benchmark) = %{version}-%{release}
 Provides: golang(%{import_path}/shared) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/api) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/cancel) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/cmd) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/gnuflag) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/i18n) = %{version}-%{release}
+Provides: golang(%{import_path}/shared/idmap) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/ioprogress) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/logger) = %{version}-%{release}
 Provides: golang(%{import_path}/shared/logging) = %{version}-%{release}
@@ -241,10 +240,10 @@ export GOPATH=$(pwd):$(pwd)/Godeps/_workspace:%{gopath}
 %gobuild -o bin/lxd %{import_path}/lxd
 %gobuild -o bin/lxc %{import_path}/lxc
 %gobuild -o bin/fuidshift %{import_path}/fuidshift
-%gobuild -o bin/lxd-benchmark %{import_path}/test/lxd-benchmark
+%gobuild -o bin/lxd-benchmark %{import_path}/lxd-benchmark
 
 # generate man-pages
-help2man bin/lxd -n "The container hypervisor - daemon" --no-info > lxd.1
+help2man bin/lxd -n "The container hypervisor - daemon" --no-info --no-discard-stderr > lxd.1
 bin/lxc manpage .
 help2man bin/fuidshift -n "uid/gid shifter" --no-info > fuidshift.1
 help2man bin/lxd-benchmark -n "The container lightervisor - benchmark" --no-info --version-string=%{version} --no-discard-stderr > lxd-benchmark.1
@@ -360,7 +359,7 @@ popd
 %doc doc/*
 
 %changelog
-* Mon Aug 28 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.17-3
+* Mon Aug 28 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.17-3
 - Add upstream patches according to lxd-2.17-0ubuntu2
 
 * Thu Aug 24 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 2.17-2
