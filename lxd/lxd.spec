@@ -35,7 +35,7 @@
 
 Name:    lxd
 Version: 2.18
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
 URL: https://linuxcontainers.org/lxd
@@ -47,6 +47,8 @@ Source4: lxd.lxd-containers.service
 Source5: lxd.dnsmasq
 Source6: lxd.logrotate
 Source7: shutdown
+Patch0: lxd-2.18-001-networks-Update-dnsmasq-on-container-names.patch
+Patch1: lxd-2.18-002-network-Better-handle-dnsmasq-version-checks.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
@@ -81,12 +83,14 @@ Requires: acl
 Requires: dnsmasq
 Requires: ebtables
 Requires: iptables
+Requires: lxc-libs >= 2.1.0
 Requires: lxd-client = %{version}-%{release}
 Requires: lxcfs
 Requires: rsync
 Requires: shadow-utils >= 4.1.5
 Requires: squashfs-tools
 Requires: tar
+Requires: xdelta
 Requires: xz
 
 %if 0%{?fedora}
@@ -186,8 +190,6 @@ building other packages which use the import path
 
 %package client
 Summary: %{summary} - Client 
-
-Requires: xdelta
 
 %description client
 LXD offers a REST API to remotely manage containers over the network,

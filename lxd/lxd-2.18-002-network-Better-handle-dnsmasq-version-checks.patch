@@ -1,0 +1,59 @@
+commit 02c93305a9d33b5ccf71b5dc5fd471451daf8fec
+Author: Stéphane Graber <stgraber@ubuntu.com>
+Date:   Sat Sep 23 13:37:57 2017 -0400
+
+    network: Better handle dnsmasq version checks
+    
+    Closes #3837
+    
+    Signed-off-by: Stéphane Graber <stgraber@ubuntu.com>
+
+diff --git a/lxd/networks.go b/lxd/networks.go
+index 007706c..48adfe0 100644
+--- a/lxd/networks.go
++++ b/lxd/networks.go
+@@ -779,12 +779,10 @@ func (n *network) Start() error {
+ 
+ 	if !debug {
+ 		// --quiet options are only supported on >2.67
+-		v, err := networkGetDnsmasqVersion()
+-		if err != nil {
+-			return err
+-		}
+ 		minVer, _ := version.NewDottedVersion("2.67")
+-		if v.Compare(minVer) > 0 {
++
++		v, err := networkGetDnsmasqVersion()
++		if err == nil && v.Compare(minVer) > 0 {
+ 			dnsmasqCmd = append(dnsmasqCmd, []string{"--quiet-dhcp", "--quiet-dhcp6", "--quiet-ra"}...)
+ 		}
+ 	}
+diff --git a/lxd/networks_utils.go b/lxd/networks_utils.go
+index 5e65942..4cf455a 100644
+--- a/lxd/networks_utils.go
++++ b/lxd/networks_utils.go
+@@ -12,6 +12,7 @@ import (
+ 	"math/rand"
+ 	"net"
+ 	"os"
++	"os/exec"
+ 	"path/filepath"
+ 	"regexp"
+ 	"strconv"
+@@ -729,11 +730,13 @@ func networkKillDnsmasq(name string, reload bool) error {
+ }
+ 
+ func networkGetDnsmasqVersion() (*version.DottedVersion, error) {
+-	output, err := shared.TryRunCommand("dnsmasq", "--version")
++	// Discard stderr on purpose (occasional linker errors)
++	output, err := exec.Command("dnsmasq", "--version").Output()
+ 	if err != nil {
+-		return nil, fmt.Errorf("Failed to check dnsmasq version")
++		return nil, fmt.Errorf("Failed to check dnsmasq version: %v", err)
+ 	}
+-	lines := strings.Split(output, " ")
++
++	lines := strings.Split(string(output), " ")
+ 	return version.NewDottedVersion(lines[2])
+ }
+ 
