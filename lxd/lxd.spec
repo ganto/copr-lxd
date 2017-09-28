@@ -361,6 +361,10 @@ popd
 %doc doc/*
 
 %changelog
+* Thu Sep 28 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.18-2
+- Add upstream patches according to lxd-2.18-0ubuntu2
+- Fix xdelta dependency, tighten liblxc version dependency
+
 * Thu Sep 21 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.18-1
 - Version bump to lxd-2.18
 - Update embedded go-lxc to commit 89b06ca
