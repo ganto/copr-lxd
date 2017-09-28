@@ -173,6 +173,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/Godeps/_workspace:%{gopath}
 %endif
 
 %changelog
+* Thu Sep 28 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.8-1
+- Update to 2.8.
+
 * Wed Dec 07 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.5-2
 - new package built with tito
 
