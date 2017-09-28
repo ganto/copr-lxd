@@ -27,14 +27,14 @@
 %global project         dustinkirkland
 %global repo            golang-petname
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit          0521e0408edae82cc76a9bf311cb5ba74f31130f
+%global commit          de18eb50a5ef51d38e0629d0e4c0fccbd1db1731
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %global import_path     %{provider_prefix}
 
 Name:           golang-petname
-Version:        2.5
-Release:        2%{?dist}
+Version:        2.8
+Release:        1%{?dist}
 Summary:        A utility to generate "pet names"
 License:        APL-2.0
 URL:            https://%{provider_prefix}
