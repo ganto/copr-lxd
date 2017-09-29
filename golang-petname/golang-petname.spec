@@ -172,6 +172,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/Godeps/_workspace:%{gopath}
 %endif
 
 %changelog
+* Fri Sep 29 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.8-2
+- Fix rpmlint errors, spec file cleanup
+
 * Thu Sep 28 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.8-1
 - Update to 2.8.
 
