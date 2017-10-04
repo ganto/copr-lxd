@@ -370,6 +370,11 @@ popd
 %doc doc/*
 
 %changelog
+* Wed Oct 04 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.18-3
+- Link against libsqlite3
+- Update go-sqlite3 dependency to fix startup issue on Fedora 26
+- Add upstream patches according to lxd-2.18-0ubuntu3
+
 * Thu Sep 28 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.18-2
 - Add upstream patches according to lxd-2.18-0ubuntu2
 - Fix xdelta dependency, tighten liblxc version dependency
