@@ -26,12 +26,12 @@
 # https://github.com/mattn/go-sqlite3
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          b4142c444a8941d0d92b0b7103a24df9cd815e42
+%global commit          ca5e3819723d8eeaf170ad510e7da1d6d2e94a08
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           golang-%{provider}-%{project}-%{repo}
-Version:        1.0.0
-Release:        7%{?dist}
+Version:        1.2.0
+Release:        0.1%{?dist}
 Summary:        Sqlite3 driver for go that using database/sql
 License:        MIT
 URL:            https://%{provider_prefix}
