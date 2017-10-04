@@ -1,0 +1,30 @@
+commit 1d52364d269e0d8a7702b8bbe5817e9361feda2c
+Author: Stéphane Graber <stgraber@ubuntu.com>
+Date:   Sat Sep 23 22:28:49 2017 -0400
+
+    version: Only include kernel version, not build id
+    
+    Signed-off-by: Stéphane Graber <stgraber@ubuntu.com>
+
+diff --git a/shared/version/platform_linux.go b/shared/version/platform_linux.go
+index 55deead..1be9b34 100644
+--- a/shared/version/platform_linux.go
++++ b/shared/version/platform_linux.go
+@@ -3,6 +3,8 @@
+ package version
+ 
+ import (
++	"strings"
++
+ 	"github.com/lxc/lxd/shared"
+ 	"github.com/lxc/lxd/shared/osarch"
+ )
+@@ -13,7 +15,7 @@ func getPlatformVersionStrings() []string {
+ 	// add kernel version
+ 	uname, err := shared.Uname()
+ 	if err == nil {
+-		versions = append(versions, uname.Release)
++		versions = append(versions, strings.Split(uname.Release, "-")[0])
+ 	}
+ 
+ 	// add distribution info

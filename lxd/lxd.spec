@@ -35,7 +35,7 @@
 
 Name:    lxd
 Version: 2.18
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
 URL: https://linuxcontainers.org/lxd
@@ -49,6 +49,14 @@ Source6: lxd.logrotate
 Source7: shutdown
 Patch0: lxd-2.18-001-networks-Update-dnsmasq-on-container-names.patch
 Patch1: lxd-2.18-002-network-Better-handle-dnsmasq-version-checks.patch
+Patch2: lxd-2.18-003-shared-util-add-helper-to-create-tempfiles.patch
+Patch3: lxd-2.18-004-shared-util-extract-helper-to-get-uname.patch
+Patch4: lxd-2.18-005-shared-osarch-add-missing-architecture-aliases.patch
+Patch5: lxd-2.18-006-shared-osarch-add-function-for-parsing-etc-os-release.patch
+Patch6: lxd-2.18-007-shared-version-add-helper-to-get-platform-specific-versions.patch
+Patch7: lxd-2.18-008-shared-version-include-OS-architecture-info-in-User-Agent.patch
+Patch8: lxd-2.18-009-Fix-uname-handling-on-some-architectures.patch
+Patch9: lxd-2.18-010-version-Only-include-kernel-version-not-build-id.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
@@ -56,6 +64,7 @@ ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
 BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
 
 BuildRequires: libacl-devel
+BuildRequires: sqlite-devel
 BuildRequires: pkgconfig(lxc)
 BuildRequires: systemd-units
 BuildRequires: help2man
@@ -67,7 +76,7 @@ BuildRequires: golang(github.com/gorilla/context)
 BuildRequires: golang(github.com/gorilla/mux)
 BuildRequires: golang(github.com/gorilla/websocket) >= 1.1.0
 BuildRequires: golang(github.com/gosexy/gettext)
-BuildRequires: golang(github.com/mattn/go-sqlite3)
+BuildRequires: golang(github.com/mattn/go-sqlite3) >= 1.2.0
 BuildRequires: golang(github.com/olekukonko/tablewriter)
 BuildRequires: golang(github.com/pborman/uuid)
 BuildRequires: golang(github.com/syndtr/gocapability/capability)
@@ -120,7 +129,7 @@ BuildRequires: golang(github.com/gorilla/context)
 BuildRequires: golang(github.com/gorilla/mux)
 BuildRequires: golang(github.com/gorilla/websocket) >= 1.1.0
 BuildRequires: golang(github.com/gosexy/gettext)
-BuildRequires: golang(github.com/mattn/go-sqlite3)
+BuildRequires: golang(github.com/mattn/go-sqlite3) >= 1.2.0
 BuildRequires: golang(github.com/olekukonko/tablewriter)
 BuildRequires: golang(github.com/pborman/uuid)
 BuildRequires: golang(github.com/syndtr/gocapability/capability)
@@ -139,7 +148,7 @@ Requires: golang(github.com/gorilla/context)
 Requires: golang(github.com/gorilla/mux)
 Requires: golang(github.com/gorilla/websocket) >= 1.1.0
 Requires: golang(github.com/gosexy/gettext)
-Requires: golang(github.com/mattn/go-sqlite3)
+Requires: golang(github.com/mattn/go-sqlite3) >= 1.2.0
 Requires: golang(github.com/olekukonko/tablewriter)
 Requires: golang(github.com/pborman/uuid)
 Requires: golang(github.com/syndtr/gocapability/capability)
@@ -239,7 +248,7 @@ export GOPATH=$(pwd):%{gopath}
 export GOPATH=$(pwd):$(pwd)/Godeps/_workspace:%{gopath}
 %endif
 
-%gobuild -o bin/lxd %{import_path}/lxd
+%gobuild -o bin/lxd -tags=libsqlite3 %{import_path}/lxd
 %gobuild -o bin/lxc %{import_path}/lxc
 %gobuild -o bin/fuidshift %{import_path}/fuidshift
 %gobuild -o bin/lxd-benchmark %{import_path}/lxd-benchmark

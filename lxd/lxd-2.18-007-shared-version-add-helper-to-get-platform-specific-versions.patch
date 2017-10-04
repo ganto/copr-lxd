@@ -1,0 +1,57 @@
+commit ad742c736c078826f301f547ef1d3101c8b2f23c
+Author: Alberto Donato <alberto.donato@canonical.com>
+Date:   Thu Sep 21 09:50:40 2017 +0200
+
+    shared/version: add helper to get platform-specific versions
+    
+    Signed-off-by: Alberto Donato <alberto.donato@canonical.com>
+
+diff --git a/shared/version/platform_linux.go b/shared/version/platform_linux.go
+new file mode 100644
+index 0000000..55deead
+--- /dev/null
++++ b/shared/version/platform_linux.go
+@@ -0,0 +1,30 @@
++// +build linux
++
++package version
++
++import (
++	"github.com/lxc/lxd/shared"
++	"github.com/lxc/lxd/shared/osarch"
++)
++
++func getPlatformVersionStrings() []string {
++	versions := []string{}
++
++	// add kernel version
++	uname, err := shared.Uname()
++	if err == nil {
++		versions = append(versions, uname.Release)
++	}
++
++	// add distribution info
++	lsbRelease, err := osarch.GetLSBRelease()
++	if err == nil {
++		for _, key := range []string{"NAME", "VERSION_ID"} {
++			value, ok := lsbRelease[key]
++			if ok {
++				versions = append(versions, value)
++			}
++		}
++	}
++	return versions
++}
+diff --git a/shared/version/platform_others.go b/shared/version/platform_others.go
+new file mode 100644
+index 0000000..d291486
+--- /dev/null
++++ b/shared/version/platform_others.go
+@@ -0,0 +1,7 @@
++// +build !linux
++
++package version
++
++func getPlatformVersionStrings() []string {
++	return []string{}
++}
