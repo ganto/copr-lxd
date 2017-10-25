@@ -1,6 +1,6 @@
 Name:       lxcfs
-Version:    2.0.7
-Release:    1%{?dist}
+Version:    2.0.8
+Release:    0.1%{?dist}
 Summary:    FUSE filesystem for LXC
 
 License:    ASL 2.0
@@ -53,36 +53,29 @@ make %{?_smp_mflags}
 %install
 make install DESTDIR=%{buildroot} %{?_smp_mflags}
 install -d -m 0755 %{buildroot}%{_localstatedir}/lib/%{name}/
-
-# The shared library liblxcfs.so used by lxcfs is not supposed to be used by
-# any other program. So we follow best practice and install it in
-# /usr/lib/lxcfs. Note that lxcfs *expects* liblxcfs.so to be found in
-# /usr/lib/lxcfs when it cannot find it in the lib.so path.
-mkdir -p %{buildroot}/usr/lib/%{name}/
-install -p -m 0755 .libs/liblxcfs.so %{buildroot}/usr/lib/%{name}/
-rm -f %{buildroot}%{_libdir}/liblxcfs.so*
 rm -f %{buildroot}%{_libdir}/liblxcfs.la
+
+%post
+%systemd_post %{name}.service
+
+%postun
+%systemd_postun %{name}.service
 
 %files
 %defattr(-,root,root)
-%doc AUTHORS README NEWS
+%doc AUTHORS
 %license COPYING
 %{_bindir}/*
 %{_datadir}/lxc
 %{_datadir}/%{name}
+%{_libdir}/%{name}
 %{_mandir}/man1/*
 %{_unitdir}/%{name}.service
 %dir %{_localstatedir}/lib/%{name}
 
-# The lxcfs executable requires liblxcfs.so be installed. It calls dlopen() to
-# dynamically reload the shared library on upgrade. This is important. Do *not*
-# split into a separate package and do not turn this into a versioned shared
-# library! (This shared library allows lxcfs to be updated without having to
-# restart it which is good when you have important system containers running!)
-%dir /usr/lib/%{name}
-/usr/lib/%{name}/liblxcfs.so
-
 %files -n pam_cgfs
+%doc AUTHORS
+%license COPYING
 %defattr(-,root,root)
 /%{_lib}/security/pam_cgfs.so
 
