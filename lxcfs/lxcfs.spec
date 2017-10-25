@@ -80,6 +80,9 @@ rm -f %{buildroot}%{_libdir}/liblxcfs.la
 /%{_lib}/security/pam_cgfs.so
 
 %changelog
+* Wed Oct 25 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.0.8-0.1
+- Update to 2.0.8.
+
 * Wed May 17 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.0.7-1
 - Version bump to lxcfs-2.0.7
 
