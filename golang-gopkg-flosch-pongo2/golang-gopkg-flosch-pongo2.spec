@@ -106,6 +106,10 @@ export GOPATH=%{buildroot}/%{gopath}:%{gopath}
 %endif
 
 %changelog
+* Fri Oct 27 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2-0.1.git8b9568e
+- Remove sub-package for v1 API
+- Rebuild for Fedora 27
+
 * Thu Dec 08 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 1-2
 - new package built with tito
 
