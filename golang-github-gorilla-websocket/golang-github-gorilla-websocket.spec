@@ -150,6 +150,10 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/Godeps/_workspace:%{gopath}
 %endif
 
 %changelog
+* Fri Oct 27 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 1.2.0-2
+- Remove compatibility code for Go 1.4
+- Rebuild for Fedora 27
+
 * Mon Jul 03 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 1.2.0-1
 - Version bump to release v1.2.0
 
