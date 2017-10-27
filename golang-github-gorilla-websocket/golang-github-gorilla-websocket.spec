@@ -30,11 +30,12 @@
 
 Name:           golang-%{provider}-%{project}-%{repo}
 Version:        1.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A WebSocket implementation for Go
 License:        BSD
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
+Patch0:         websocket-1.2.0-Replace-parseURL-with-net-url-Parse.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
@@ -57,13 +58,12 @@ Provides:      golang(%{import_path}) = %{version}-%{release}
 %description devel
 %{summary}
 
-This package contains library source intended for
-building other packages which use import path with
-%{import_path} prefix.
+This package contains library source intended for building other packages
+which use import path with %{import_path} prefix.
 %endif
 
 %if 0%{?with_unit_test} && 0%{?with_devel}
-%package unit-test
+%package unit-test-devel
 Summary:         Unit tests for %{name} package
 # If go_compiler is not set to 1, there is no virtual provide. Use golang instead.
 BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
@@ -76,15 +76,15 @@ BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
 # test subpackage tests code from devel subpackage
 Requires:        %{name}-devel = %{version}-%{release}
 
-%description unit-test
+%description unit-test-devel
 %{summary}
 
-This package contains unit tests for project
-providing packages with %{import_path} prefix.
+This package contains unit tests for project providing packages with
+%{import_path} prefix.
 %endif
 
 %prep
-%setup -q -n %{repo}-%{commit}
+%autosetup -n %{repo}-%{commit} -p1
 
 %build
 
@@ -144,7 +144,7 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/Godeps/_workspace:%{gopath}
 %endif
 
 %if 0%{?with_unit_test} && 0%{?with_devel}
-%files unit-test -f unit-test.file-list
+%files unit-test-devel -f unit-test.file-list
 %license LICENSE
 %doc README.md AUTHORS
 %endif
@@ -152,7 +152,6 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/Godeps/_workspace:%{gopath}
 %changelog
 * Mon Jul 03 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 1.2.0-1
 - Version bump to release v1.2.0
-
 
 * Thu Mar 02 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 1.1.0-1
 - Version bump to latest tagged release v1.1.0
