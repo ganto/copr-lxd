@@ -24,22 +24,17 @@
 %global repo            pongo2
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 
-%global commit          5e81b817a0c48c1c57cdf1a9056cf76bdee02ca9
-%global shortcommit     %(c=%{commit}; echo ${c:0:7})
-%global import_path     gopkg.in/flosch/pongo2.v3
-
-%global v2_commit       8b9568efa76dbade04e58e4b568ff97362183835
-%global v2_shortcommit  %(c=%{v2_commit}; echo ${c:0:7})
-%global v2_import_path  gopkg.in/flosch/pongo2.v2
+%global commit       8b9568efa76dbade04e58e4b568ff97362183835
+%global shortcommit  %(c=%{commit}; echo ${c:0:7})
+%global import_path  gopkg.in/flosch/pongo2.v2
 
 Name:           golang-gopkg-flosch-pongo2
-Version:        1
-Release:        2%{?dist}
+Version:        2
+Release:        0.1.git%{shortcommit}%{?dist}
 Summary:        Django-syntax like template-engine for Go
 License:        MIT
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/pongo2-%{shortcommit}.tar.gz
-Source1:        https://%{provider_prefix}/archive/%{v2_commit}/pongo2-%{v2_commit}.tar.gz
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
@@ -58,8 +53,6 @@ BuildRequires:  golang(gopkg.in/check.v1)
 Summary:        Django-syntax like template-engine for Go
 BuildArch:      noarch
 
-Requires:       golang(gopkg.in/check.v1)
-
 Provides:       golang(%{import_path}) = %{version}-%{release}
 
 %description devel
@@ -68,48 +61,23 @@ Django-syntax like template-engine for Go.
 This package contains library source intended for
 building other packages which use import path with
 %{import_path} prefix.
-
-%package devel-v2
-Summary:        Django-syntax like template-engine for Go
-BuildArch:      noarch
-
-Requires:       golang(gopkg.in/check.v1)
-
-Provides:       golang(%{v2_import_path}) = %{version}-%{release}
-
-%description devel-v2
-Django-syntax like template-engine for Go.
-
-This package contains library source intended for
-building other packages which use import path with
-%{v2_import_path} prefix.
 %endif
 
 %prep
 %setup -q -n pongo2-%{commit}
-%setup -q -n pongo2-%{v2_commit} -T -b 1
 
 %build
 
 %install
 # source codes for building projects
 %if 0%{?with_devel}
-install -d -p %{buildroot}/%{gopath}/src/%{v2_import_path}/
-# find all *.go but no *_test.go files and generate devel.file-list
-for file in $(find . -iname "*.go" \! -iname "*_test.go") ; do
-    install -d -p %{buildroot}/%{gopath}/src/%{v2_import_path}/$(dirname $file)
-    cp -pav $file %{buildroot}/%{gopath}/src/%{v2_import_path}/$file
-    echo "%%{gopath}/src/%%{v2_import_path}/$file" >> v2_devel.file-list
-done
-pushd ../pongo2-%{commit}
 install -d -p %{buildroot}/%{gopath}/src/%{import_path}/
 # find all *.go but no *_test.go files and generate devel.file-list
 for file in $(find . -iname "*.go" \! -iname "*_test.go") ; do
     install -d -p %{buildroot}/%{gopath}/src/%{import_path}/$(dirname $file)
     cp -pav $file %{buildroot}/%{gopath}/src/%{import_path}/$file
-    echo "%%{gopath}/src/%%{import_path}/$file" >> ../pongo2-%{v2_commit}/devel.file-list
+    echo "%%{gopath}/src/%%{import_path}/$file" >> devel.file-list
 done
-popd
 %endif
 
 %check
@@ -125,9 +93,6 @@ export GOPATH=%{buildroot}/%{gopath}:%{gopath}
 %endif
 
 %gotest %{import_path}
-pushd ../pongo2-%{v2_commit}
-%gotest %{v2_import_path}
-popd
 %endif
 
 #define license tag if not already defined
@@ -138,18 +103,10 @@ popd
 %license LICENSE
 %doc README.md
 %dir %{gopath}/src/%{import_path}
-
-%files devel-v2 -f v2_devel.file-list
-%license LICENSE
-%doc README.md
-%dir %{gopath}/src/%{v2_import_path}
 %endif
 
 %changelog
 * Thu Dec 08 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 1-2
-- new package built with tito
-
-* Thu Dec 08 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch>
 - new package built with tito
 
 * Sun Nov 27 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> - 1-1
