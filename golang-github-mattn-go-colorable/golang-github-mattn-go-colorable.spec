@@ -25,12 +25,12 @@
 # https://github.com/mattn/go-colorable
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          d228849504861217f796da67fae4f6e347643f15
+%global commit          167de6bfdfba052fa6b2d3664c8f5272e23c9072
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           golang-%{provider}-%{project}-%{repo}
-Version:        0.0.6
-Release:        2.git%{shortcommit}%{?dist}
+Version:        0.0.9
+Release:        0.1%{?dist}
 Summary:        Colorable writer for windows
 License:        MIT
 URL:            https://%{provider_prefix}
@@ -41,6 +41,10 @@ ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
 # If go_compiler is not set to 1, there is no virtual provide. Use golang instead.
 BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
 
+%if ! 0%{?with_bundled}
+BuildRequires: golang(github.com/mattn/go-isatty)
+%endif
+
 %description
 %{summary}
 
@@ -50,9 +54,12 @@ Summary:       %{summary}
 BuildArch:     noarch
 
 %if 0%{?with_check} && ! 0%{?with_bundled}
+BuildRequires: golang(github.com/mattn/go-isatty)
 %endif
 
-Provides:      golang(%{import_path}) = %{version}-%{release}
+Requires: golang(github.com/mattn/go-isatty)
+
+Provides: golang(%{import_path}) = %{version}-%{release}
 
 %description devel
 %{summary}
