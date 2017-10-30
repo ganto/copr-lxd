@@ -372,6 +372,12 @@ exit 0
 %doc doc/*
 
 %changelog
+* Mon Oct 30 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.19-1
+- Update to 2.19.
+- Update embedded go-lxc to commit 74fb852
+- Drop hard dependency to lxc-2.1
+- Various RPM metadata fixes
+
 * Wed Oct 04 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.18-3
 - Link against libsqlite3
 - Update go-sqlite3 dependency to fix startup issue on Fedora 26
