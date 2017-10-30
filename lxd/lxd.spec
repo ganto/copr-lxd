@@ -23,19 +23,19 @@
 
 # lxd
 %global git0 https://%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 1d616bf6637feae442ad30d76e8c678608d8fb40
+%global commit 205a45586ad02df597b8bb51b090a08076bba6a3
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
 
 # lxc-go
 %global git1 https://%{provider}.%{provider_tld}/%{project}/go-lxc
-%global commit1 89b06ca6fad6daea5a72a1f47e69e39716c46198
+%global commit1 74fb852c18ea4341f85e49bb6f33635946aabda7
 %global shortcommit1 %(c=%{commit1}; echo ${c:0:7})
 %global import_path1 gopkg.in/lxc/go-lxc.v2
 
 Name:    lxd
-Version: 2.18
-Release: 3%{?dist}
+Version: 2.19
+Release: 1%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
 URL: https://linuxcontainers.org/lxd
@@ -47,16 +47,7 @@ Source4: lxd.lxd-containers.service
 Source5: lxd.dnsmasq
 Source6: lxd.logrotate
 Source7: shutdown
-Patch0: lxd-2.18-001-networks-Update-dnsmasq-on-container-names.patch
-Patch1: lxd-2.18-002-network-Better-handle-dnsmasq-version-checks.patch
-Patch2: lxd-2.18-003-shared-util-add-helper-to-create-tempfiles.patch
-Patch3: lxd-2.18-004-shared-util-extract-helper-to-get-uname.patch
-Patch4: lxd-2.18-005-shared-osarch-add-missing-architecture-aliases.patch
-Patch5: lxd-2.18-006-shared-osarch-add-function-for-parsing-etc-os-release.patch
-Patch6: lxd-2.18-007-shared-version-add-helper-to-get-platform-specific-versions.patch
-Patch7: lxd-2.18-008-shared-version-include-OS-architecture-info-in-User-Agent.patch
-Patch8: lxd-2.18-009-Fix-uname-handling-on-some-architectures.patch
-Patch9: lxd-2.18-010-version-Only-include-kernel-version-not-build-id.patch
+Patch0: lxd-2.19-Revert-Temporary-workaround-for-log15-API-breakage.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
@@ -92,7 +83,7 @@ Requires: acl
 Requires: dnsmasq
 Requires: ebtables
 Requires: iptables
-Requires: lxc-libs >= 2.1.0
+Requires: lxc-libs
 Requires: lxd-client = %{version}-%{release}
 Requires: lxcfs
 Requires: rsync
@@ -120,7 +111,7 @@ This package contains the LXD daemon.
 %if 0%{?with_devel}
 %package devel
 BuildArch: noarch
-Summary: %{summary} - Source Libraries
+Summary: Container hypervisor based on LXC - Source Libraries
 
 %if 0%{?with_check}
 BuildRequires: golang(github.com/dustinkirkland/golang-petname)
@@ -198,7 +189,7 @@ building other packages which use the import path
 %endif
 
 %package client
-Summary: %{summary} - Client 
+Summary: Container hypervisor based on LXC - Client
 
 %description client
 LXD offers a REST API to remotely manage containers over the network,
@@ -207,7 +198,7 @@ using an image based workflow and with support for live migration.
 This package contains the command line client.
 
 %package tools
-Summary: %{summary} - Extra Tools
+Summary: Container hypervisor based on LXC - Extra Tools
 
 BuildRequires: python3-lxc
 Requires: python3-lxc
@@ -219,10 +210,11 @@ using an image based workflow and with support for live migration.
 This package contains extra tools provided with LXD.
  - fuidshift - A tool to map/unmap filesystem uids/gids
  - lxc-to-lxd - A tool to migrate LXC containers to LXD
+ - lxd-benchmark - A LXD benchmark utility
 
 %package doc
 BuildArch: noarch
-Summary: %{summary} - Documentation
+Summary: Container hypervisor based on LXC - Documentation
 
 %description doc
 LXD offers a REST API to remotely manage containers over the network,
@@ -259,11 +251,6 @@ bin/lxc manpage .
 help2man bin/fuidshift -n "uid/gid shifter" --no-info > fuidshift.1
 help2man bin/lxd-benchmark -n "The container lightervisor - benchmark" --no-info --version-string=%{version} --no-discard-stderr > lxd-benchmark.1
 help2man scripts/lxc-to-lxd -n "Convert LXC containers to LXD" --no-info --version-string=%{version} > lxc-to-lxd.1
-
-%pre
-# check for existence of lxd group, create it if not found
-getent group lxd > /dev/null || groupadd -f -r lxd
-exit 0
 
 %install
 # install binaries
@@ -325,12 +312,27 @@ done
 popd
 %endif
 
+%pre
+# check for existence of lxd group, create it if not found
+getent group lxd > /dev/null || groupadd -f -r lxd
+exit 0
+
+%post
+%systemd_post %{name}.socket
+%systemd_post %{name}.service
+%systemd_post %{name}-container.service
+
+%postun
+%systemd_postun %{name}.socket
+%systemd_postun %{name}.service
+%systemd_postun %{name}-container.service
+
 #define license tag if not already defined
 %{!?_licensedir:%global license %doc}
 
 %files
 %license COPYING
-%doc AUTHORS CONTRIBUTING.md README.md
+%doc AUTHORS
 %config(noreplace) %{_sysconfdir}/dnsmasq.d/lxd
 %config(noreplace) %{_sysconfdir}/logrotate.d/lxd
 %{_bindir}/%{name}
@@ -345,7 +347,7 @@ popd
 %if 0%{?with_devel} || ! 0%{?with_bundled}
 %files devel -f devel.file-list
 %license COPYING
-%doc AUTHORS CONTRIBUTING.md README.md
+%doc AUTHORS
 %dir %{gopath}/src/%{import_path}
 %dir %{gopath}/src/%{import_path1}
 %endif
