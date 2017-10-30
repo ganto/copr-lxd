@@ -106,6 +106,9 @@ export GOPATH=%{buildroot}/%{gopath}:%{gopath}
 %endif
 
 %changelog
+* Mon Oct 30 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 3-0.1.git5e81b81
+- Change package to v3 API
+
 * Fri Oct 27 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2-0.1.git8b9568e
 - Remove sub-package for v3 API
 - Rebuild for Fedora 27
