@@ -24,12 +24,12 @@
 %global repo            pongo2
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 
-%global commit       8b9568efa76dbade04e58e4b568ff97362183835
+%global commit       5e81b817a0c48c1c57cdf1a9056cf76bdee02ca9
 %global shortcommit  %(c=%{commit}; echo ${c:0:7})
-%global import_path  gopkg.in/flosch/pongo2.v2
+%global import_path  gopkg.in/flosch/pongo2.v3
 
 Name:           golang-gopkg-flosch-pongo2
-Version:        2
+Version:        3
 Release:        0.1.git%{shortcommit}%{?dist}
 Summary:        Django-syntax like template-engine for Go
 License:        MIT
@@ -107,7 +107,7 @@ export GOPATH=%{buildroot}/%{gopath}:%{gopath}
 
 %changelog
 * Fri Oct 27 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2-0.1.git8b9568e
-- Remove sub-package for v1 API
+- Remove sub-package for v3 API
 - Rebuild for Fedora 27
 
 * Thu Dec 08 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 1-2
