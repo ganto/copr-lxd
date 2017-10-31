@@ -131,6 +131,9 @@ popd
 %endif
 
 %changelog
+* Tue Oct 31 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.4.2-1
+- Update to 0.4.2.
+
 * Fri Dec 30 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.3.4-2
 - Rebuild for Python 3.6
 
