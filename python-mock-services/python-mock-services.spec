@@ -108,6 +108,9 @@ PYTHONPATH=. nosetests-%{python3_version}
 %endif
 
 %changelog
+* Tue Oct 31 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.3-6
+- Rebuild for Fedora 27
+
 * Sun Jun 11 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.3-5
 - Apply fix for 'AttributeError: _real_send' when built on Fedora 26
 
