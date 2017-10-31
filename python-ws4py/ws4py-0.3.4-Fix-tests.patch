@@ -1,0 +1,10 @@
+--- python-ws4py-0.3.4.orig/test/test_manager.py
++++ python-ws4py-0.3.4/test/test_manager.py
+@@ -62,6 +62,7 @@ class WSManagerTest(unittest.TestCase):
+         self.assertFalse(m.running)
+         
+         m.start()
++        time.sleep(0.2)
+         self.assertTrue(m.running)
+ 
+         m.stop()

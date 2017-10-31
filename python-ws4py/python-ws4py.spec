@@ -9,13 +9,14 @@
 %endif
 
 Name:           python-%{srcname}
-Version:        0.3.4
-Release:        2%{?dist}
+Version:        0.4.2
+Release:        1%{?dist}
 Summary:        WebSocket client and server library for Python
 License:        BSD
 URL:            https://pypi.python.org/pypi/%{srcname}
-Source0:        https://github.com/%{gh_owner}/%{gh_name}/archive/v%{version}/%{gh_name}-v%{version}.tar.gz
-Patch0:         0001-Fix-tests.patch
+Source0:        https://github.com/%{gh_owner}/%{gh_name}/archive/%{version}/%{gh_name}-%{version}.tar.gz
+# Thanks to https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=834921
+Patch0:         ws4py-0.3.4-Fix-tests.patch
 BuildArch:      noarch
 
 %description
