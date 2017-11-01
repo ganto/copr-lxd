@@ -97,6 +97,9 @@ PYTHONPATH=. py.test-3
 %{python3_sitelib}/%{srcname}
 
 %changelog
+* Wed Nov 01 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.1.5-3
+- Rebuild for Fedora 27
+
 * Fri Dec 30 2016 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.1.5-2
 - Add test fix for Fedora 26
 
