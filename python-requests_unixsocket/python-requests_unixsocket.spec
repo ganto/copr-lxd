@@ -10,7 +10,7 @@
 
 Name:           python-%{srcname}
 Version:        0.1.5
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Use requests to talk HTTP via a UNIX domain socket
 License:        ASL 2.0
 URL:            https://pypi.python.org/pypi/%{gh_name}
