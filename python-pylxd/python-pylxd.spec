@@ -195,6 +195,9 @@ nosetests-%{python3_version} pylxd
 %endif
 
 %changelog
+* Thu Nov 02 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.2.4-3
+- Rebuild for Fedora 27.
+
 * Tue Jul 11 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.2.4-2
 - Version bump to upstream release pylxd-2.2.4
 
