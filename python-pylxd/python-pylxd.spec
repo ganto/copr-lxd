@@ -12,7 +12,7 @@
 
 Name:           python-%{pkgname}
 Version:        2.2.4
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Python library for interacting with LXD REST API
 
 Group:          Development/Languages
