@@ -35,7 +35,7 @@
 
 Name:    lxd
 Version: 2.19
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Container hypervisor based on LXC
 License: ASL 2.0
 URL: https://linuxcontainers.org/lxd
@@ -240,7 +240,9 @@ export GOPATH=$(pwd):%{gopath}
 export GOPATH=$(pwd):$(pwd)/Godeps/_workspace:%{gopath}
 %endif
 
-%gobuild -o bin/lxd -tags=libsqlite3 %{import_path}/lxd
+# work-around RHBZ #1409931
+go build -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\\n')" -a -v -x -o bin/lxd -tags=libsqlite3 %{import_path}/lxd
+
 %gobuild -o bin/lxc %{import_path}/lxc
 %gobuild -o bin/fuidshift %{import_path}/fuidshift
 %gobuild -o bin/lxd-benchmark %{import_path}/lxd-benchmark
