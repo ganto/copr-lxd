@@ -375,6 +375,10 @@ exit 0
 %doc doc/*
 
 %changelog
+* Fri Nov 03 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.19-2
+- Work-around syntax issue on Fedora 27.
+- Runtime detect liblxc version.
+
 * Mon Oct 30 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.19-1
 - Update to 2.19.
 - Update embedded go-lxc to commit 74fb852
