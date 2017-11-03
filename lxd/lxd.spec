@@ -48,6 +48,7 @@ Source5: lxd.dnsmasq
 Source6: lxd.logrotate
 Source7: shutdown
 Patch0: lxd-2.19-Revert-Temporary-workaround-for-log15-API-breakage.patch
+Patch1: lxd-2.19-liblxc-detect-version-at-runtime.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
