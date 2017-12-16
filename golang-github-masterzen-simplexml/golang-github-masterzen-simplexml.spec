@@ -151,3 +151,6 @@ export GOPATH=%{buildroot}/%{gopath}:%{gopath}
 %endif
 
 %changelog
+* Sat Dec 16 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0-0.1.20160608git4572e39
+- Initial package
+
