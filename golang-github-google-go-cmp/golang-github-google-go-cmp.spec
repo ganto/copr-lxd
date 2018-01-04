@@ -25,8 +25,8 @@
 # https://github.com/google/go-cmp
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          97aa668b73e764ccdd786bc3ccd2edffe621150e
-%global commitdate      20180103
+%global commit          98232909528519e571b2e69fbe546b6ef35f5780
+%global commitdate      20171103
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           golang-%{provider}-%{project}-%{repo}
