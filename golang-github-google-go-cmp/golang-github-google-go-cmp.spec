@@ -152,6 +152,12 @@ export GOPATH=%{buildroot}/%{gopath}:%{gopath}
 %endif
 
 %changelog
+* Thu Jan 04 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.1.0-0.1.20180103git97aa668
+- Add golang-github-google-go-cmp package
+
+* Thu Jan 04 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch>
+- Add golang-github-google-go-cmp package
+
 * Thu Jan 04 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.1.0-0.2.20180103git97aa668
 - Add missing 'Provides'
 
