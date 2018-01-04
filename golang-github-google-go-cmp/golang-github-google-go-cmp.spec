@@ -152,6 +152,9 @@ export GOPATH=%{buildroot}/%{gopath}:%{gopath}
 %endif
 
 %changelog
+* Thu Jan 04 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.1.0-0.1.20171103git9823290
+- Rollback to commit 9823290 due to dependency issues
+
 * Thu Jan 04 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.1.0-0.1.20180103git97aa668
 - Add golang-github-google-go-cmp package
 
