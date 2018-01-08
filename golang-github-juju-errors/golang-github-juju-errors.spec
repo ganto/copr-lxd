@@ -2,9 +2,8 @@
 %global with_devel 1
 %global with_bundled 0
 %global with_debug 0
-# disable tests for now due to circular dependencies
-%global with_check 0
-%global with_unit_test 0
+%global with_check 1
+%global with_unit_test 1
 %else
 %global with_devel 1
 %global with_bundled 0
@@ -32,7 +31,7 @@
 
 Name:           golang-%{provider}-%{project}-%{repo}
 Version:        0
-Release:        0.1.%{commitdate}git%{shortcommit}%{?dist}
+Release:        0.2.%{commitdate}git%{shortcommit}%{?dist}
 Summary:        Common juju errors and functions to annotate errors
 License:        LGPLv3
 URL:            https://%{provider_prefix}
