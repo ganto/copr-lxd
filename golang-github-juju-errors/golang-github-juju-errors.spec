@@ -153,6 +153,9 @@ export GOPATH=%{buildroot}/%{gopath}:%{gopath}
 %endif
 
 %changelog
+* Mon Jan 08 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0-0.2.20170703gitc7d06af
+- Enable test suite
+
 * Fri Jan 05 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0-0.1.20170703gitc7d06af
 - Initial package
 
