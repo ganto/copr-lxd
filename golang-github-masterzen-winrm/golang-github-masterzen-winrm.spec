@@ -172,6 +172,9 @@ export GOPATH=%{buildroot}/%{gopath}:%{gopath}
 %endif
 
 %changelog
+* Wed Jan 10 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0-0.2.20170814gita2df6b1
+- Fix 'Requires' definitions
+
 * Wed Jan 03 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0-0.1.20170814gita2df6b1
 - Initial package
 
