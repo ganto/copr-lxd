@@ -31,7 +31,7 @@
 
 Name:           golang-%{provider}-%{project}-%{repo}
 Version:        0
-Release:        0.1.%{commitdate}git%{shortcommit}%{?dist}
+Release:        0.2.%{commitdate}git%{shortcommit}%{?dist}
 Summary:        Command-line tool and library for Windows remote command execution in Go
 License:        ASL 2.0
 URL:            https://%{provider_prefix}
@@ -62,9 +62,11 @@ BuildRequires:  golang(github.com/nu7hatch/gouuid)
 BuildRequires:  golang(gopkg.in/check.v1)
 %endif
 
+Requires:       golang(github.com/Azure/go-ntlmssp)
 Requires:       golang(github.com/ChrisTrenkamp/goxpath)
 Requires:       golang(github.com/masterzen/azure-sdk-for-go/core/http)
 Requires:       golang(github.com/masterzen/azure-sdk-for-go/core/tls)
+Requires:       golang(github.com/masterzen/simplexml/dom)
 Requires:       golang(github.com/nu7hatch/gouuid)
 
 Provides:       golang(%{import_path}) = %{version}-%{release}
@@ -90,7 +92,6 @@ BuildArch:      noarch
 # test subpackage tests code from devel subpackage
 Requires:       %{name}-devel = %{version}-%{release}
 
-Requires:       golang(github.com/Azure/go-ntlmssp)
 Requires:       golang(github.com/ChrisTrenkamp/goxpath)
 Requires:       golang(github.com/ChrisTrenkamp/goxpath/tree)
 Requires:       golang(github.com/ChrisTrenkamp/goxpath/tree/xmltree)
