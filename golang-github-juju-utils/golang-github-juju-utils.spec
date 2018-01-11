@@ -278,6 +278,9 @@ export GOPATH=%{buildroot}/%{gopath}:%{gopath}
 %endif
 
 %changelog
+* Thu Jan 11 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0-0.3.20171025git9b65c33
+- Update incomplete 'Fix-NoSuchUserErrRegexp' patch
+
 * Thu Jan 11 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0-0.2.20171025git9b65c33
 - Add some fixes and updates for tests
 - Enable test suite
