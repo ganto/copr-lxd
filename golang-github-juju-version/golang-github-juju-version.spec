@@ -2,8 +2,7 @@
 %global with_devel 1
 %global with_bundled 0
 %global with_debug 0
-# disable tests for now due to circular dependencies
-%global with_check 0
+%global with_check 1
 %global with_unit_test 1
 %else
 %global with_devel 1
@@ -32,11 +31,12 @@
 
 Name:           golang-%{provider}-%{project}-%{repo}
 Version:        0
-Release:        0.1.%{commitdate}git%{shortcommit}%{?dist}
+Release:        0.2.%{commitdate}git%{shortcommit}%{?dist}
 Summary:        Go package for intelligent version comparisons
 License:        LGPLv3
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
+Patch0:         version-b64dbd5-Fix-TestParseMajorMinor-err-message.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}

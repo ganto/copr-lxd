@@ -1,0 +1,22 @@
+commit c30c876a4123bcf728ef46591964ff19ba55c312
+Author: Reto Gantenbein <reto.gantenbein@linuxmonk.ch>
+Date:   Thu Jan 11 19:23:00 2018 +0100
+
+    Fix TestParseMajorMinor() err message
+    
+    ParseMajorMinor() from version.go uses strconv.Atoi() for
+    integer casting.
+
+diff --git a/version_test.go b/version_test.go
+index ce4d0ae..4d2b48b 100644
+--- a/version_test.go
++++ b/version_test.go
+@@ -296,7 +296,7 @@ func (*suite) TestParseMajorMinor(c *gc.C) {
+ 		err: "invalid major.minor version number 1.2.3",
+ 	}, {
+ 		v:   "blah",
+-		err: `invalid major version number blah: strconv.ParseInt: parsing "blah": invalid syntax`,
++		err: `invalid major version number blah: strconv.Atoi: parsing "blah": invalid syntax`,
+ 	}}
+ 
+ 	for i, test := range parseMajorMinorTests {
