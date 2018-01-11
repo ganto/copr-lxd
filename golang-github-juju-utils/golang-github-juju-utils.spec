@@ -2,8 +2,7 @@
 %global with_devel 1
 %global with_bundled 0
 %global with_debug 0
-# disable tests for now due to circular dependencies
-%global with_check 0
+%global with_check 1
 %global with_unit_test 1
 %else
 %global with_devel 1
@@ -32,11 +31,13 @@
 
 Name:           golang-%{provider}-%{project}-%{repo}
 Version:        0
-Release:        0.1.%{commitdate}git%{shortcommit}%{?dist}
+Release:        0.2.%{commitdate}git%{shortcommit}%{?dist}
 Summary:        General utility functions
 License:        LGPLv3
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
+Patch0:         utils-9b65c33-Fix-NoSuchUserErrRegexp.patch
+Patch1:         utils-9b65c33-Update-test-to-adjusted-definition-of-httprequest.ErrorMapper.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
@@ -52,6 +53,8 @@ Summary:        %{summary}
 BuildArch:      noarch
 
 %if 0%{?with_check}
+BuildRequires:  bzr
+BuildRequires:  distro-info-data
 BuildRequires:  golang(github.com/juju/cmd)
 BuildRequires:  golang(github.com/juju/errors)
 BuildRequires:  golang(github.com/juju/httpprof)
@@ -65,6 +68,10 @@ BuildRequires:  golang(github.com/juju/testing/httptesting)
 BuildRequires:  golang(github.com/julienschmidt/httprouter)
 BuildRequires:  golang(github.com/masterzen/winrm)
 BuildRequires:  golang(golang.org/x/crypto/pbkdf2)
+BuildRequires:  golang(golang.org/x/crypto/ssh)
+#BuildRequires:  golang(golang.org/x/crypto/ssh/knownhosts)
+BuildRequires:  golang(golang.org/x/crypto/ssh/terminal)
+BuildRequires:  golang(golang.org/x/net/context)
 BuildRequires:  golang(gopkg.in/check.v1)
 BuildRequires:  golang(gopkg.in/errgo.v1)
 BuildRequires:  golang(gopkg.in/juju/names.v2)
@@ -81,6 +88,9 @@ Requires:       golang(github.com/juju/loggo)
 Requires:       golang(github.com/juju/mutex)
 Requires:       golang(github.com/masterzen/winrm)
 Requires:       golang(golang.org/x/crypto/pbkdf2)
+Requires:       golang(golang.org/x/crypto/ssh)
+#Requires:       golang(golang.org/x/crypto/ssh/knownhosts)
+Requires:       golang(golang.org/x/crypto/ssh/terminal)
 Requires:       golang(gopkg.in/errgo.v1)
 Requires:       golang(gopkg.in/mgo.v2)
 Requires:       golang(gopkg.in/tomb.v1)
@@ -146,12 +156,15 @@ BuildArch:      noarch
 # test subpackage tests code from devel subpackage
 Requires:       %{name}-devel = %{version}-%{release}
 
+Requires:       bzr
+Requires:       distro-info-data
 Requires:       golang(github.com/juju/cmd)
 Requires:       golang(github.com/juju/testing)
 Requires:       golang(github.com/juju/testing/checkers)
 Requires:       golang(github.com/juju/testing/filetesting)
 Requires:       golang(github.com/juju/testing/httptesting)
 Requires:       golang(github.com/julienschmidt/httprouter)
+Requires:       golang(golang.org/x/net/context)
 Requires:       golang(gopkg.in/check.v1)
 Requires:       golang(gopkg.in/errgo.v1)
 Requires:       golang(gopkg.in/juju/names.v2)
@@ -165,7 +178,7 @@ providing packages with %{import_path} prefix.
 %endif
 
 %prep
-%autosetup -n %{repo}-%{commit}
+%autosetup -n %{repo}-%{commit} -p1
 
 %build
 
@@ -175,7 +188,7 @@ providing packages with %{import_path} prefix.
 install -d -p %{buildroot}/%{gopath}/src/%{import_path}/
 echo "%%dir %%{gopath}/src/%%{import_path}/." >> devel.file-list
 # find all *.go but no *_test.go files and generate devel.file-list
-for file in $(find . -iname "*.go" \! -iname "*_test.go") ; do
+for file in $(find . -iname "*.go" -o -iname "*.s" \! -iname "*_test.go") ; do
     echo "%%dir %%{gopath}/src/%%{import_path}/$(dirname $file)" >> devel.file-list
     install -d -p %{buildroot}/%{gopath}/src/%{import_path}/$(dirname $file)
     cp -pav $file %{buildroot}/%{gopath}/src/%{import_path}/$file
@@ -238,7 +251,9 @@ export GOPATH=%{buildroot}/%{gopath}:%{gopath}
 %gotest %{import_path}/series
 %gotest %{import_path}/set
 %gotest %{import_path}/shell
-%gotest %{import_path}/ssh
+# depends on golang.org/x/crypto/ssh/knownhosts which requires
+# >=golang-googlecode-go-crypto-0.x-20170411gited77091
+#%%gotest %%{import_path}/ssh
 %gotest %{import_path}/symlink
 %gotest %{import_path}/tailer
 %gotest %{import_path}/tar

@@ -1,0 +1,19 @@
+commit aad9643bcdc3fa31ae0e7e1cb1d2c2eef7a99df6
+Author: Reto Gantenbein <reto.gantenbein@linuxmonk.ch>
+Date:   Tue Jan 9 07:20:48 2018 +0100
+
+    Adjust file_test to updated NoSuchUserErrRegexp
+
+diff --git a/file_test.go b/file_test.go
+index 396fabc..1cb27c1 100644
+--- a/file_test.go
++++ b/file_test.go
+@@ -60,7 +60,7 @@ func (*fileSuite) TestNormalizePath(c *gc.C) {
+ 		expected: filepath.FromSlash("foo~bar/baz"),
+ 	}, {
+ 		path: "~foobar/path",
+-		err:  ".*" + utils.NoSuchUserErrRegexp,
++		err:  utils.NoSuchUserErrRegexp + ".*",
+ 	}} {
+ 		c.Logf("test %d: %s", i, test.path)
+ 		actual, err := utils.NormalizePath(test.path)

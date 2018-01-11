@@ -1,0 +1,81 @@
+commit 4d32b8fcd1f8383086f36a73aa1e8dbbca76cda3
+Author: Reto Gantenbein <reto.gantenbein@linuxmonk.ch>
+Date:   Thu Jan 11 07:27:01 2018 +0100
+
+    Update test to adjusted definition of httprequest.ErrorMapper
+    
+    On Dec 1, 2016 the API of juju/httprequest was changed in a incompatible
+    way. This results in the following failure when trying to run the test
+    against a newer version:
+    
+    ../debugstatus/handler_test.go:20: undefined: httprequest.ErrorMapper
+    ../debugstatus/handler_test.go:34: undefined: httprequest.ErrorMapper
+
+diff --git a/debugstatus/handler_test.go b/debugstatus/handler_test.go
+index 3fa076a..adcba11 100644
+--- a/debugstatus/handler_test.go
++++ b/debugstatus/handler_test.go
+@@ -11,18 +11,13 @@ import (
+ 	"github.com/juju/testing/httptesting"
+ 	"github.com/juju/utils/debugstatus"
+ 	"github.com/julienschmidt/httprouter"
++	"golang.org/x/net/context"
+ 	gc "gopkg.in/check.v1"
+ 	"gopkg.in/errgo.v1"
+ 
+ 	"github.com/juju/httprequest"
+ )
+ 
+-var errorMapper httprequest.ErrorMapper = func(err error) (httpStatus int, errorBody interface{}) {
+-	return http.StatusInternalServerError, httprequest.RemoteError{
+-		Message: err.Error(),
+-	}
+-}
+-
+ type handlerSuite struct {
+ }
+ 
+@@ -31,24 +26,26 @@ var _ = gc.Suite(&handlerSuite{})
+ var errUnauthorized = errgo.New("you shall not pass!")
+ 
+ func newHTTPHandler(h *debugstatus.Handler) http.Handler {
+-	errMapper := httprequest.ErrorMapper(func(err error) (httpStatus int, errorBody interface{}) {
+-		code, status := "", http.StatusInternalServerError
+-		switch errgo.Cause(err) {
+-		case errUnauthorized:
+-			code, status = "unauthorized", http.StatusUnauthorized
+-		case debugstatus.ErrNoPprofConfigured:
+-			code, status = "forbidden", http.StatusForbidden
+-		case debugstatus.ErrNoTraceConfigured:
+-			code, status = "forbidden", http.StatusForbidden
+-		}
+-		return status, httprequest.RemoteError{
+-			Code:    code,
+-			Message: err.Error(),
+-		}
+-	})
++	httpServer := httprequest.Server{
++		ErrorMapper: func(ctx context.Context, err error) (httpstatus int, errorBody interface{}) {
++			code, status := "", http.StatusInternalServerError
++			switch errgo.Cause(err) {
++			case errUnauthorized:
++				code, status = "unauthorized", http.StatusUnauthorized
++			case debugstatus.ErrNoPprofConfigured:
++				code, status = "forbidden", http.StatusForbidden
++			case debugstatus.ErrNoTraceConfigured:
++				code, status = "forbidden", http.StatusForbidden
++			}
++			return status, httprequest.RemoteError{
++				Code:    code,
++				Message: err.Error(),
++			}
++		},
++	}
+ 
+-	handlers := errMapper.Handlers(func(httprequest.Params) (*debugstatus.Handler, error) {
+-		return h, nil
++	handlers := httpServer.Handlers(func(p httprequest.Params) (*debugstatus.Handler, context.Context, error) {
++		return h, p.Context, nil
+ 	})
+ 	r := httprouter.New()
+ 	for _, h := range handlers {
