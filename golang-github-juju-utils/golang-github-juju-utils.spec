@@ -31,7 +31,7 @@
 
 Name:           golang-%{provider}-%{project}-%{repo}
 Version:        0
-Release:        0.2.%{commitdate}git%{shortcommit}%{?dist}
+Release:        0.3.%{commitdate}git%{shortcommit}%{?dist}
 Summary:        General utility functions
 License:        LGPLv3
 URL:            https://%{provider_prefix}

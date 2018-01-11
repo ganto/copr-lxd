@@ -17,3 +17,26 @@ index 396fabc..1cb27c1 100644
  	}} {
  		c.Logf("test %d: %s", i, test.path)
  		actual, err := utils.NormalizePath(test.path)
+commit 0b3c29a60d45a1346931f6ce84b529c94c60e800
+Author: Reto Gantenbein <reto.gantenbein@linuxmonk.ch>
+Date:   Tue Jan 9 07:17:07 2018 +0100
+
+    Fix NoSuchUserErrRegexp on Unix
+    
+    The upstream golang error message must have changed so that
+    this regexp doesn't match anymore. Reduce it to what is set
+    in homeDir() in case an error is thrown.
+
+diff --git a/systemerrmessages_unix.go b/systemerrmessages_unix.go
+index 7a0edd4..1d87cca 100644
+--- a/systemerrmessages_unix.go
++++ b/systemerrmessages_unix.go
+@@ -10,7 +10,7 @@ package utils
+ // that may be returned in case of failed calls to the system.
+ // Any extra leading/trailing regex-es are left to be added by the developer.
+ const (
+-	NoSuchUserErrRegexp = `user: unknown user [a-z0-9_-]*`
++	NoSuchUserErrRegexp = `no such user`
+ 	NoSuchFileErrRegexp = `no such file or directory`
+ 	MkdirFailErrRegexp  = `.* not a directory`
+ )
