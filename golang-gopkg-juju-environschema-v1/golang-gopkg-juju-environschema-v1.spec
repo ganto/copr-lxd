@@ -182,3 +182,6 @@ export GOPATH=%{buildroot}/%{gopath}:%{gopath}
 %endif
 
 %changelog
+* Thu Jan 11 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 1-0.1.20151104git7359fc7
+- Initial package
+
