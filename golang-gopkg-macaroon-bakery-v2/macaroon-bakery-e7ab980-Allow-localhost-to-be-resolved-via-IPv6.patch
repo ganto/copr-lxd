@@ -1,0 +1,19 @@
+commit 776b4a1235b2ab904b111a72714366890a8880f9
+Author: Reto Gantenbein <reto.gantenbein@linuxmonk.ch>
+Date:   Fri Jan 12 19:25:37 2018 +0100
+
+    Allow localhost to be resolved via IPv6
+
+diff --git a/httpbakery/keyring_test.go b/httpbakery/keyring_test.go
+index 36199de..4a52d01 100644
+--- a/httpbakery/keyring_test.go
++++ b/httpbakery/keyring_test.go
+@@ -140,7 +140,7 @@ func (s *KeyringSuite) TestThirdPartyInfoForLocationWrongURL(c *gc.C) {
+ 	_, err := httpbakery.ThirdPartyInfoForLocation(testContext, client, "http://localhost:0")
+ 	c.Logf("%v", errgo.Details(err))
+ 	c.Assert(err, gc.ErrorMatches,
+-		`(Get|GET) http://localhost:0/discharge/info: dial tcp 127.0.0.1:0: .*connection refused`)
++		`(Get|GET) http://localhost:0/discharge/info: dial tcp (127.0.0.1|\[::1\]):0: .*connection refused`)
+ }
+ 
+ func (s *KeyringSuite) TestThirdPartyInfoForLocationReturnsInvalidJSON(c *gc.C) {
