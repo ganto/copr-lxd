@@ -1,4 +1,4 @@
-%if 0%{?fedora} || 0%{?rhel} == 6
+%if 0%{?fedora} || 0%{?rhel}
 %global with_devel 1
 %global with_bundled 0
 %global with_debug 0
@@ -8,7 +8,7 @@
 %global with_devel 1
 %global with_bundled 0
 %global with_debug 0
-%global with_check 1
+%global with_check 0
 %global with_unit_test 0
 %endif
 
@@ -25,25 +25,25 @@
 # https://github.com/gorilla/websocket
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          ea4d1f681babbce9545c9c5f3d5194a789c89f5b
+%global commit          7ca4275b84a9d500f68971c8c4a97f0ec18eb889
+%global commitdate      20171112
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           golang-%{provider}-%{project}-%{repo}
 Version:        1.2.0
-Release:        2%{?dist}
+Release:        3.%{commitdate}git%{shortcommit}%{?dist}
 Summary:        A WebSocket implementation for Go
 License:        BSD
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
-Patch0:         websocket-1.2.0-Replace-parseURL-with-net-url-Parse.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
-ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
+ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 aarch64 %{arm}}
 # If go_compiler is not set to 1, there is no virtual provide. Use golang instead.
 BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
 
 %description
-%{summary}
+%{summary}.
 
 %if 0%{?with_devel}
 %package devel
@@ -56,17 +56,17 @@ BuildArch:     noarch
 Provides:      golang(%{import_path}) = %{version}-%{release}
 
 %description devel
-%{summary}
+%{summary}.
 
-This package contains library source intended for building other packages
-which use import path with %{import_path} prefix.
+This package contains library source intended for
+building other packages which use import path with
+%{import_path} prefix.
 %endif
 
-%if 0%{?with_unit_test} && 0%{?with_devel}
+%if 0%{?with_unit_test}
 %package unit-test-devel
-Summary:         Unit tests for %{name} package
-# If go_compiler is not set to 1, there is no virtual provide. Use golang instead.
-BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
+Summary:       Unit tests for %{name} package
+BuildArch:     noarch
 
 %if 0%{?with_check}
 #Here comes all BuildRequires: PACKAGE the unit tests
@@ -74,17 +74,17 @@ BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
 %endif
 
 # test subpackage tests code from devel subpackage
-Requires:        %{name}-devel = %{version}-%{release}
+Requires:      %{name}-devel = %{version}-%{release}
 
 %description unit-test-devel
-%{summary}
+%{summary}.
 
-This package contains unit tests for project providing packages with
-%{import_path} prefix.
+This package contains unit tests for project
+providing packages with %{import_path} prefix.
 %endif
 
 %prep
-%autosetup -n %{repo}-%{commit} -p1
+%autosetup -n %{repo}-%{commit}
 
 %build
 
@@ -103,7 +103,7 @@ done
 %endif
 
 # testing files for this project
-%if 0%{?with_unit_test} && 0%{?with_devel}
+%if 0%{?with_unit_test}
 install -d -p %{buildroot}/%{gopath}/src/%{import_path}/
 # find all *_test.go files and generate unit-test.file-list
 for file in $(find . -iname "*_test.go"); do
@@ -112,18 +112,18 @@ for file in $(find . -iname "*_test.go"); do
     cp -pav $file %{buildroot}/%{gopath}/src/%{import_path}/$file
     echo "%%{gopath}/src/%%{import_path}/$file" >> unit-test.file-list
 done
-%endif
 
 %if 0%{?with_devel}
 sort -u -o devel.file-list devel.file-list
 %endif
+%endif
 
 %check
 %if 0%{?with_check} && 0%{?with_unit_test} && 0%{?with_devel}
-%if ! 0%{?with_bundled}
-export GOPATH=%{buildroot}/%{gopath}:%{gopath}
+%if 0%{?with_bundled}
+export GOPATH=$(pwd)/Godeps/_workspace:%{gopath}
 %else
-export GOPATH=%{buildroot}/%{gopath}:$(pwd)/Godeps/_workspace:%{gopath}
+export GOPATH=%{buildroot}/%{gopath}:%{gopath}
 %endif
 
 %if ! 0%{?gotest:1}
@@ -140,7 +140,6 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/Godeps/_workspace:%{gopath}
 %files devel -f devel.file-list
 %license LICENSE
 %doc README.md AUTHORS
-%dir %{gopath}/src/%{provider}.%{provider_tld}/%{project}
 %endif
 
 %if 0%{?with_unit_test} && 0%{?with_devel}
