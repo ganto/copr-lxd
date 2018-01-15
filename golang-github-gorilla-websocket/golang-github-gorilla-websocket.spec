@@ -149,6 +149,9 @@ export GOPATH=%{buildroot}/%{gopath}:%{gopath}
 %endif
 
 %changelog
+* Mon Jan 15 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 1.2.0-3.20171112git7ca4275
+- Update to commit 7ca4275
+
 * Fri Oct 27 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 1.2.0-2
 - Remove compatibility code for Go 1.4
 - Rebuild for Fedora 27
