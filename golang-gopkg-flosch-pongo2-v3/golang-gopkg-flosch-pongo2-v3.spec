@@ -171,6 +171,10 @@ export GOPATH=%{buildroot}/%{gopath}:%{gopath}
 %endif
 
 %changelog
+* Wed Jan 17 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 3-0.1.20141028git5e81b81
+- Cleanup spec file
+- Rename to golang-gopkg-flosch-pongo2-v3
+
 * Mon Oct 30 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 3-0.1.git5e81b81
 - Change package to v3 API
 
