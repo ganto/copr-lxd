@@ -25,19 +25,20 @@
 # https://github.com/mattn/go-colorable
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
-%global commit          167de6bfdfba052fa6b2d3664c8f5272e23c9072
+%global commit          6cc8b475d4682021d75d2cbe2bc481bec4ce98e5
+%global commitdate      20180115
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           golang-%{provider}-%{project}-%{repo}
 Version:        0.0.9
-Release:        0.1%{?dist}
+Release:        0.2.%{commitdate}git%{shortcommit}%{?dist}
 Summary:        Colorable writer for windows
 License:        MIT
 URL:            https://%{provider_prefix}
 Source0:        https://%{provider_prefix}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
-ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
+ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 aarch64 %{arm}}
 # If go_compiler is not set to 1, there is no virtual provide. Use golang instead.
 BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
 
@@ -46,52 +47,51 @@ BuildRequires: golang(github.com/mattn/go-isatty)
 %endif
 
 %description
-%{summary}
+%{summary}.
 
 %if 0%{?with_devel}
 %package devel
 Summary:       %{summary}
 BuildArch:     noarch
 
-%if 0%{?with_check} && ! 0%{?with_bundled}
+%if 0%{?with_check}
 BuildRequires: golang(github.com/mattn/go-isatty)
 %endif
 
-Requires: golang(github.com/mattn/go-isatty)
+Requires:      golang(github.com/mattn/go-isatty)
 
-Provides: golang(%{import_path}) = %{version}-%{release}
+Provides:      golang(%{import_path}) = %{version}-%{release}
 
 %description devel
-%{summary}
+%{summary}.
 
 This package contains library source intended for
 building other packages which use import path with
 %{import_path} prefix.
 %endif
 
-%if 0%{?with_unit_test} && 0%{?with_devel}
+%if 0%{?with_unit_test}
 %package unit-test-devel
-Summary:         Unit tests for %{name} package
+Summary:       Unit tests for %{name} package
+BuildArch:     noarch
+
 %if 0%{?with_check}
 #Here comes all BuildRequires: PACKAGE the unit tests
 #in %%check section need for running
 %endif
 
 # test subpackage tests code from devel subpackage
-Requires:        %{name}-devel = %{version}-%{release}
-
-%if 0%{?with_check} && ! 0%{?with_bundled}
-%endif
+Requires:      %{name}-devel = %{version}-%{release}
 
 %description unit-test-devel
-%{summary}
+%{summary}.
 
 This package contains unit tests for project
 providing packages with %{import_path} prefix.
 %endif
 
 %prep
-%setup -q -n %{repo}-%{commit}
+%autosetup -n %{repo}-%{commit}
 
 %build
 
