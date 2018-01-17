@@ -157,6 +157,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/Godeps/_workspace:%{gopath}
 %endif
 
 %changelog
+* Wed Jan 17 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.0.9-0.2.20180115git6cc8b47
+- Update to commit 6cc8b47
+
 * Fri Oct 27 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0.0.9-0.1
 - Update to 0.0.9.
 
