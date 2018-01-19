@@ -172,6 +172,9 @@ export GOPATH=%{buildroot}/%{gopath}:$(pwd)/Godeps/_workspace:%{gopath}
 %endif
 
 %changelog
+* Fri Jan 19 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 1.2.0-0.1.gitb91bfb9
+- Update to upstream v1.2.0
+
 * Tue Sep 12 2017 Jan Chaloupka <jchaloup@redhat.com> - 1.1.4-0.1.git69483b4
 - Update to upstream v1.1.4
   resolves: #1490397
