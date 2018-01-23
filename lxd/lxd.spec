@@ -467,6 +467,11 @@ exit 0
 %doc doc/*
 
 %changelog
+* Tue Jan 23 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.20-1
+- Update to 2.20 (with patches from 2.20-0ubuntu4)
+- Major rework of the spec file
+- Enable tests
+
 * Fri Nov 03 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.19-2
 - Work-around syntax issue on Fedora 27.
 - Runtime detect liblxc version.
