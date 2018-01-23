@@ -16,42 +16,32 @@
 %global debug_package   %{nil}
 %endif
 
-%global provider github
-%global provider_tld com
-%global project lxc
-%global repo lxd
+%global provider        github
+%global provider_tld    com
+%global project         lxc
+%global repo            lxd
+# https://github.com/lxc/lxd
+%global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
+%global import_path     %{provider_prefix}
 
-# lxd
-%global git0 https://%{provider}.%{provider_tld}/%{project}/%{repo}
-%global commit 205a45586ad02df597b8bb51b090a08076bba6a3
-%global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global import_path %{provider}.%{provider_tld}/%{project}/%{repo}
-
-# lxc-go
-%global git1 https://%{provider}.%{provider_tld}/%{project}/go-lxc
-%global commit1 74fb852c18ea4341f85e49bb6f33635946aabda7
-%global shortcommit1 %(c=%{commit1}; echo ${c:0:7})
-%global import_path1 gopkg.in/lxc/go-lxc.v2
-
-Name:    lxd
-Version: 2.19
-Release: 2%{?dist}
-Summary: Container hypervisor based on LXC
-License: ASL 2.0
-URL: https://linuxcontainers.org/lxd
-Source0: %{git0}/archive/%{commit}/%{repo}-%{shortcommit}.tar.gz
-Source1: %{git1}/archive/%{commit1}/go-lxc-%{shortcommit1}.tar.gz
-Source2: lxd.socket
-Source3: lxd.service
-Source4: lxd.lxd-containers.service
-Source5: lxd.dnsmasq
-Source6: lxd.logrotate
-Source7: shutdown
-Patch0: lxd-2.19-Revert-Temporary-workaround-for-log15-API-breakage.patch
-Patch1: lxd-2.19-liblxc-detect-version-at-runtime.patch
+Name:          lxd
+Version:       2.20
+Release:       1%{?dist}
+Summary:       Container hypervisor based on LXC
+License:       ASL 2.0
+URL:           https://linuxcontainers.org/lxd
+Source0:       https://linuxcontainers.org/downloads/lxd/lxd-%{version}.tar.gz
+Source1:       lxd.socket
+Source2:       lxd.service
+Source3:       lxd.lxd-containers.service
+Source4:       lxd.dnsmasq
+Source5:       lxd.logrotate
+Source6:       shutdown
+Patch0:        lxd-2.20-000-Fix-TestEndpoints_LocalUnknownUnixGroup-test.patch
+Patch1:        lxd-2.20-001-lxd-daemon-Fix-unsetting-https-address.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
-ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 %{arm}}
+ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 aarch64 %{arm}}
 # If go_compiler is not set to 1, there is no virtual provide. Use golang instead.
 BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
 
@@ -61,30 +51,36 @@ BuildRequires: pkgconfig(lxc)
 BuildRequires: systemd-units
 BuildRequires: help2man
 
-%if ! 0%{?with_bundled}
 BuildRequires: golang(github.com/dustinkirkland/golang-petname)
 BuildRequires: golang(github.com/golang/protobuf/proto)
-BuildRequires: golang(github.com/gorilla/context)
 BuildRequires: golang(github.com/gorilla/mux)
 BuildRequires: golang(github.com/gorilla/websocket) >= 1.1.0
 BuildRequires: golang(github.com/gosexy/gettext)
+BuildRequires: golang(github.com/juju/idmclient)
+BuildRequires: golang(github.com/juju/persistent-cookiejar)
+BuildRequires: golang(github.com/mattn/go-colorable)
 BuildRequires: golang(github.com/mattn/go-sqlite3) >= 1.2.0
 BuildRequires: golang(github.com/olekukonko/tablewriter)
 BuildRequires: golang(github.com/pborman/uuid)
 BuildRequires: golang(github.com/syndtr/gocapability/capability)
 BuildRequires: golang(golang.org/x/crypto/scrypt)
 BuildRequires: golang(golang.org/x/crypto/ssh/terminal)
-BuildRequires: golang(gopkg.in/inconshreveable/log15.v2)
+BuildRequires: golang(golang.org/x/net/context)
 BuildRequires: golang(gopkg.in/flosch/pongo2.v3)
+# Change to golang(gopkg.in/lxc/go-lxc.v2) once lxd-devel providing this is gone
+BuildRequires: golang-gopkg-lxc-go-lxc-v2-devel
+BuildRequires: golang(gopkg.in/macaroon-bakery.v2/bakery)
+BuildRequires: golang(gopkg.in/macaroon-bakery.v2/bakery/checkers)
+BuildRequires: golang(gopkg.in/macaroon-bakery.v2/bakery/identchecker)
+BuildRequires: golang(gopkg.in/macaroon-bakery.v2/httpbakery)
+BuildRequires: golang(gopkg.in/macaroon-bakery.v2/httpbakery/form)
 BuildRequires: golang(gopkg.in/tomb.v2)
 BuildRequires: golang(gopkg.in/yaml.v2)
-%endif
 
 Requires: acl
 Requires: dnsmasq
 Requires: ebtables
 Requires: iptables
-Requires: lxc-libs
 Requires: lxd-client = %{version}-%{release}
 Requires: lxcfs
 Requires: rsync
@@ -95,6 +91,7 @@ Requires: xdelta
 Requires: xz
 
 %if 0%{?fedora}
+Suggests: btrfs-progs
 Suggests: criu
 Suggests: device-mapper-persistent-data
 Suggests: lvm2
@@ -105,108 +102,162 @@ Suggests: lxd-tools
 %description
 Container hypervisor based on LXC
 LXD offers a REST API to remotely manage containers over the network,
-using an image based workflow and with support for live migration.
+using an image based work-flow and with support for live migration.
 
 This package contains the LXD daemon.
 
 %if 0%{?with_devel}
 %package devel
-BuildArch: noarch
-Summary: Container hypervisor based on LXC - Source Libraries
+Summary:       Container hypervisor based on LXC - Source Libraries
+BuildArch:     noarch
 
 %if 0%{?with_check}
+BuildRequires: btrfs-progs
+BuildRequires: dnsmasq
+
 BuildRequires: golang(github.com/dustinkirkland/golang-petname)
 BuildRequires: golang(github.com/golang/protobuf/proto)
-BuildRequires: golang(github.com/gorilla/context)
 BuildRequires: golang(github.com/gorilla/mux)
 BuildRequires: golang(github.com/gorilla/websocket) >= 1.1.0
 BuildRequires: golang(github.com/gosexy/gettext)
+BuildRequires: golang(github.com/juju/idmclient)
+BuildRequires: golang(github.com/juju/persistent-cookiejar)
+BuildRequires: golang(github.com/mattn/go-colorable)
 BuildRequires: golang(github.com/mattn/go-sqlite3) >= 1.2.0
+BuildRequires: golang(github.com/mpvl/subtest)
 BuildRequires: golang(github.com/olekukonko/tablewriter)
 BuildRequires: golang(github.com/pborman/uuid)
+BuildRequires: golang(github.com/stretchr/testify/assert) >= 1.2.0
+BuildRequires: golang(github.com/stretchr/testify/require) >= 1.2.0
+BuildRequires: golang(github.com/stretchr/testify/suite) >= 1.2.0
 BuildRequires: golang(github.com/syndtr/gocapability/capability)
 BuildRequires: golang(golang.org/x/crypto/scrypt)
 BuildRequires: golang(golang.org/x/crypto/ssh/terminal)
-BuildRequires: golang(gopkg.in/inconshreveable/log15.v2)
-BuildRequires: golang(gopkg.in/inconshreveable/log15.v2/term)
+BuildRequires: golang(golang.org/x/net/context)
 BuildRequires: golang(gopkg.in/flosch/pongo2.v3)
+BuildRequires: golang(gopkg.in/juju/environschema.v1/form)
+# Change to golang(gopkg.in/lxc/go-lxc.v2) once lxd-devel providing this is gone
+BuildRequires: golang-gopkg-lxc-go-lxc-v2-devel
+BuildRequires: golang(gopkg.in/macaroon-bakery.v2/bakery)
+BuildRequires: golang(gopkg.in/macaroon-bakery.v2/bakery/checkers)
+BuildRequires: golang(gopkg.in/macaroon-bakery.v2/bakery/identchecker)
+BuildRequires: golang(gopkg.in/macaroon-bakery.v2/httpbakery)
+BuildRequires: golang(gopkg.in/macaroon-bakery.v2/httpbakery/form)
 BuildRequires: golang(gopkg.in/tomb.v2)
 BuildRequires: golang(gopkg.in/yaml.v2)
 %endif
 
-Requires: golang(github.com/dustinkirkland/golang-petname)
-Requires: golang(github.com/golang/protobuf/proto)
-Requires: golang(github.com/gorilla/context)
-Requires: golang(github.com/gorilla/mux)
-Requires: golang(github.com/gorilla/websocket) >= 1.1.0
-Requires: golang(github.com/gosexy/gettext)
-Requires: golang(github.com/mattn/go-sqlite3) >= 1.2.0
-Requires: golang(github.com/olekukonko/tablewriter)
-Requires: golang(github.com/pborman/uuid)
-Requires: golang(github.com/syndtr/gocapability/capability)
-Requires: golang(golang.org/x/crypto/scrypt)
-Requires: golang(golang.org/x/crypto/ssh/terminal)
-Requires: golang(gopkg.in/inconshreveable/log15.v2)
-Requires: golang(gopkg.in/inconshreveable/log15.v2/term)
-Requires: golang(gopkg.in/flosch/pongo2.v3)
-Requires: golang(gopkg.in/tomb.v2)
-Requires: golang(gopkg.in/yaml.v2)
+Requires:      golang(github.com/dustinkirkland/golang-petname)
+Requires:      golang(github.com/golang/protobuf/proto)
+Requires:      golang(github.com/gorilla/mux)
+Requires:      golang(github.com/gorilla/websocket) >= 1.1.0
+Requires:      golang(github.com/gosexy/gettext)
+Requires:      golang(github.com/juju/idmclient)
+Requires:      golang(github.com/juju/persistent-cookiejar)
+Requires:      golang(github.com/mattn/go-colorable)
+Requires:      golang(github.com/mattn/go-sqlite3) >= 1.2.0
+Requires:      golang(github.com/olekukonko/tablewriter)
+Requires:      golang(github.com/pborman/uuid)
+Requires:      golang(github.com/stretchr/testify/require) >= 1.2.0
+Requires:      golang(github.com/syndtr/gocapability/capability)
+Requires:      golang(golang.org/x/crypto/scrypt)
+Requires:      golang(golang.org/x/crypto/ssh/terminal)
+Requires:      golang(golang.org/x/net/context)
+Requires:      golang(gopkg.in/flosch/pongo2.v3)
+Requires:      golang(gopkg.in/juju/environschema.v1/form)
+# Change to golang(gopkg.in/lxc/go-lxc.v2) once lxd-devel providing this is gone
+Requires:      golang-gopkg-lxc-go-lxc-v2-devel
+Requires:      golang(gopkg.in/macaroon-bakery.v2/bakery)
+Requires:      golang(gopkg.in/macaroon-bakery.v2/bakery/checkers)
+Requires:      golang(gopkg.in/macaroon-bakery.v2/bakery/identchecker)
+Requires:      golang(gopkg.in/macaroon-bakery.v2/httpbakery)
+Requires:      golang(gopkg.in/macaroon-bakery.v2/httpbakery/form)
+Requires:      golang(gopkg.in/tomb.v2)
+Requires:      golang(gopkg.in/yaml.v2)
 
-Provides: golang(%{import_path}) = %{version}-%{release}
-Provides: golang(%{import_path}/client) = %{version}-%{release}
-Provides: golang(%{import_path}/lxc/config) = %{version}-%{release}
-Provides: golang(%{import_path}/lxd/db) = %{version}-%{release}
-Provides: golang(%{import_path}/lxd/db/query) = %{version}-%{release}
-Provides: golang(%{import_path}/lxd/db/schema) = %{version}-%{release}
-Provides: golang(%{import_path}/lxd/state) = %{version}-%{release}
-Provides: golang(%{import_path}/lxd/sys) = %{version}-%{release}
-Provides: golang(%{import_path}/lxd/types) = %{version}-%{release}
-Provides: golang(%{import_path}/lxd/util) = %{version}-%{release}
-Provides: golang(%{import_path}/lxd-benchmark/benchmark) = %{version}-%{release}
-Provides: golang(%{import_path}/shared) = %{version}-%{release}
-Provides: golang(%{import_path}/shared/api) = %{version}-%{release}
-Provides: golang(%{import_path}/shared/cancel) = %{version}-%{release}
-Provides: golang(%{import_path}/shared/cmd) = %{version}-%{release}
-Provides: golang(%{import_path}/shared/gnuflag) = %{version}-%{release}
-Provides: golang(%{import_path}/shared/i18n) = %{version}-%{release}
-Provides: golang(%{import_path}/shared/idmap) = %{version}-%{release}
-Provides: golang(%{import_path}/shared/ioprogress) = %{version}-%{release}
-Provides: golang(%{import_path}/shared/logger) = %{version}-%{release}
-Provides: golang(%{import_path}/shared/logging) = %{version}-%{release}
-Provides: golang(%{import_path}/shared/osarch) = %{version}-%{release}
-Provides: golang(%{import_path}/shared/simplestreams) = %{version}-%{release}
-Provides: golang(%{import_path}/shared/termios) = %{version}-%{release}
-Provides: golang(%{import_path}/shared/version) = %{version}-%{release}
-
-Provides: golang(%{import_path1}) = %{version}-%{release}
+Provides:      golang(%{import_path}/client) = %{version}-%{release}
+Provides:      golang(%{import_path}/lxc/config) = %{version}-%{release}
+Provides:      golang(%{import_path}/lxd/config) = %{version}-%{release}
+Provides:      golang(%{import_path}/lxd/db) = %{version}-%{release}
+Provides:      golang(%{import_path}/lxd/db/node) = %{version}-%{release}
+Provides:      golang(%{import_path}/lxd/db/query) = %{version}-%{release}
+Provides:      golang(%{import_path}/lxd/db/schema) = %{version}-%{release}
+Provides:      golang(%{import_path}/lxd/debug) = %{version}-%{release}
+Provides:      golang(%{import_path}/lxd/endpoints) = %{version}-%{release}
+Provides:      golang(%{import_path}/lxd/node) = %{version}-%{release}
+Provides:      golang(%{import_path}/lxd/state) = %{version}-%{release}
+Provides:      golang(%{import_path}/lxd/sys) = %{version}-%{release}
+Provides:      golang(%{import_path}/lxd/task) = %{version}-%{release}
+Provides:      golang(%{import_path}/lxd/types) = %{version}-%{release}
+Provides:      golang(%{import_path}/lxd/util) = %{version}-%{release}
+Provides:      golang(%{import_path}/lxd-benchmark/benchmark) = %{version}-%{release}
+Provides:      golang(%{import_path}/shared) = %{version}-%{release}
+Provides:      golang(%{import_path}/shared/api) = %{version}-%{release}
+Provides:      golang(%{import_path}/shared/cancel) = %{version}-%{release}
+Provides:      golang(%{import_path}/shared/cmd) = %{version}-%{release}
+Provides:      golang(%{import_path}/shared/gnuflag) = %{version}-%{release}
+Provides:      golang(%{import_path}/shared/i18n) = %{version}-%{release}
+Provides:      golang(%{import_path}/shared/idmap) = %{version}-%{release}
+Provides:      golang(%{import_path}/shared/ioprogress) = %{version}-%{release}
+Provides:      golang(%{import_path}/shared/log15) = %{version}-%{release}
+Provides:      golang(%{import_path}/shared/log15/stack) = %{version}-%{release}
+Provides:      golang(%{import_path}/shared/log15/term) = %{version}-%{release}
+Provides:      golang(%{import_path}/shared/logger) = %{version}-%{release}
+Provides:      golang(%{import_path}/shared/logging) = %{version}-%{release}
+Provides:      golang(%{import_path}/shared/osarch) = %{version}-%{release}
+Provides:      golang(%{import_path}/shared/simplestreams) = %{version}-%{release}
+Provides:      golang(%{import_path}/shared/subtest) = %{version}-%{release}
+Provides:      golang(%{import_path}/shared/termios) = %{version}-%{release}
+Provides:      golang(%{import_path}/shared/version) = %{version}-%{release}
 
 %description devel
 LXD offers a REST API to remotely manage containers over the network,
-using an image based workflow and with support for live migration.
+using an image based work-flow and with support for live migration.
 
 This package contains library sources intended for
 building other packages which use the import path
 %{import_path} prefix.
 %endif
 
+%if 0%{?with_unit_test}
+%package unit-test-devel
+Summary:       Unit tests for %{name} package
+BuildArch:     noarch
+
+# test subpackage tests code from devel subpackage
+Requires:      %{name}-devel = %{version}-%{release}
+
+Requires:      golang(github.com/mattn/go-sqlite3)
+Requires:      golang(github.com/mpvl/subtest)
+Requires:      golang(github.com/stretchr/testify/assert) >= 1.2.0
+Requires:      golang(github.com/stretchr/testify/require) >= 1.2.0
+Requires:      golang(github.com/stretchr/testify/suite) >= 1.2.0
+
+%description unit-test-devel
+%{summary}.
+
+This package contains unit tests for project providing packages
+with %{import_path} prefix.
+%endif
+
 %package client
-Summary: Container hypervisor based on LXC - Client
+Summary:       Container hypervisor based on LXC - Client
 
 %description client
 LXD offers a REST API to remotely manage containers over the network,
-using an image based workflow and with support for live migration.
+using an image based work-flow and with support for live migration.
 
 This package contains the command line client.
 
 %package tools
-Summary: Container hypervisor based on LXC - Extra Tools
+Summary:       Container hypervisor based on LXC - Extra Tools
 
 BuildRequires: python3-lxc
-Requires: python3-lxc
+Requires:      python3-lxc
 
 %description tools
 LXD offers a REST API to remotely manage containers over the network,
-using an image based workflow and with support for live migration.
+using an image based work-flow and with support for live migration.
 
 This package contains extra tools provided with LXD.
  - fuidshift - A tool to map/unmap filesystem uids/gids
@@ -214,26 +265,21 @@ This package contains extra tools provided with LXD.
  - lxd-benchmark - A LXD benchmark utility
 
 %package doc
-BuildArch: noarch
-Summary: Container hypervisor based on LXC - Documentation
+Summary:       Container hypervisor based on LXC - Documentation
+BuildArch:     noarch
 
 %description doc
 LXD offers a REST API to remotely manage containers over the network,
-using an image based workflow and with support for live migration.
+using an image based work-flow and with support for live migration.
 
 This package contains user documentation.
 
 %prep
-%autosetup -n %{repo}-%{commit} -p1
-
-# unpack go-lxc
-tar zxf %{SOURCE1}
+%autosetup -n %{name}-%{version} -p1
 
 %build
 mkdir -p src/%{provider}.%{provider_tld}/%{project}
 ln -s ../../../ src/%{import_path}
-mkdir -p src/gopkg.in/lxc
-ln -s ../../../go-lxc-%{commit1} src/%{import_path1}
 
 %if ! 0%{?with_bundled}
 export GOPATH=$(pwd):%{gopath}
@@ -242,7 +288,7 @@ export GOPATH=$(pwd):$(pwd)/Godeps/_workspace:%{gopath}
 %endif
 
 # work-around RHBZ #1409931
-go build -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\\n')" -a -v -x -o bin/lxd -tags=libsqlite3 %{import_path}/lxd
+go build -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\\n')" -a -v -x -o bin/lxd -tags libsqlite3 %{import_path}/lxd
 
 %gobuild -o bin/lxc %{import_path}/lxc
 %gobuild -o bin/fuidshift %{import_path}/fuidshift
@@ -268,9 +314,9 @@ install -p -m 755 scripts/lxc-to-lxd %{buildroot}%{_bindir}/lxc-to-lxd
 
 # extra configs
 install -d %{buildroot}%{_sysconfdir}/dnsmasq.d
-install -p -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/dnsmasq.d/lxd
+install -p -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/dnsmasq.d/lxd
 install -d %{buildroot}%{_sysconfdir}/logrotate.d
-install -p -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/logrotate.d/lxd
+install -p -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/logrotate.d/lxd
 
 # install bash completion
 install -dp %{buildroot}%{_datadir}/bash-completion/completions
@@ -278,11 +324,11 @@ install -p -m 644 config/bash/lxd-client %{buildroot}%{_datadir}/bash-completion
 
 # install systemd units
 install -d %{buildroot}%{_unitdir}
+install -p -m 644 %{SOURCE1} %{buildroot}%{_unitdir}
 install -p -m 644 %{SOURCE2} %{buildroot}%{_unitdir}
-install -p -m 644 %{SOURCE3} %{buildroot}%{_unitdir}
-install -p -m 644 %{SOURCE4} %{buildroot}%{_unitdir}/%{name}-containers.service
+install -p -m 644 %{SOURCE3} %{buildroot}%{_unitdir}/%{name}-containers.service
 install -d %{buildroot}/usr/lib/%{name}
-install -p -m 755 %{SOURCE7} %{buildroot}/usr/lib/%{name}/shutdown
+install -p -m 755 %{SOURCE6} %{buildroot}/usr/lib/%{name}/shutdown
 
 # install man-pages
 install -d %{buildroot}%{_mandir}/man1
@@ -299,20 +345,63 @@ install -d %{buildroot}%{_localstatedir}/log/%{name}
 # source codes for building projects
 %if 0%{?with_devel} || ! 0%{?with_bundled}
 install -d -p %{buildroot}/%{gopath}/src/%{import_path}/
+echo "%%dir %%{gopath}/src/%%{import_path}/." >> devel.file-list
 # find all *.go but no *_test.go files and generate devel.file-list
-for file in $(find . -path ./go-lxc-%{commit1} -prune -o -iname "*.go" \! -iname "*_test.go" -print) ; do
+for file in $(find . -iname "*.go" \! -iname "*_test.go") ; do
+    echo "%%dir %%{gopath}/src/%%{import_path}/$(dirname $file)" >> devel.file-list
     install -d -p %{buildroot}/%{gopath}/src/%{import_path}/$(dirname $file)
     cp -pav $file %{buildroot}/%{gopath}/src/%{import_path}/$file
     echo "%%{gopath}/src/%%{import_path}/$file" >> devel.file-list
 done
-install -d -p %{buildroot}/%{gopath}/src/%{import_path1}/
-pushd go-lxc-%{commit1}
-for file in $(find . -iname "*.h" -o -iname "*.go" \! -iname "*_test.go") ; do
-    install -d -p %{buildroot}/%{gopath}/src/%{import_path1}/$(dirname $file)
-    cp -pav $file %{buildroot}/%{gopath}/src/%{import_path1}/$file
-    echo "%%{gopath}/src/%%{import_path1}/$file" >> ../devel.file-list
+%endif
+
+# testing files for this project
+%if 0%{?with_unit_test}
+install -d -p %{buildroot}/%{gopath}/src/%{import_path}/
+# find all *_test.go files and generate unit-test.file-list
+for file in $(find . -iname "*_test.go" -o -type f -wholename "./test/deps/s*"); do
+    echo "%%dir %%{gopath}/src/%%{import_path}/$(dirname $file)" >> devel.file-list
+    install -d -p %{buildroot}/%{gopath}/src/%{import_path}/$(dirname $file)
+    cp -pav $file %{buildroot}/%{gopath}/src/%{import_path}/$file
+    echo "%%{gopath}/src/%%{import_path}/$file" >> unit-test.file-list
 done
-popd
+
+%if 0%{?with_devel}
+sort -u -o devel.file-list devel.file-list
+%endif
+%endif
+
+%check
+%if 0%{?with_check} && 0%{?with_unit_test} && 0%{?with_devel}
+%if 0%{?with_bundled}
+export GOPATH=$(pwd)/Godeps/_workspace:%{gopath}
+%else
+export GOPATH=%{buildroot}/%{gopath}:%{gopath}
+%endif
+
+%if ! 0%{?gotest:1}
+%global gotest go test
+%endif
+
+%gotest %{import_path}/lxc
+%gotest %{import_path}/lxd
+%gotest %{import_path}/lxd/config
+%gotest %{import_path}/lxd/db
+%gotest %{import_path}/lxd/db/node
+%gotest %{import_path}/lxd/db/query
+%gotest %{import_path}/lxd/db/schema
+%gotest %{import_path}/lxd/debug
+%gotest %{import_path}/lxd/endpoints
+%gotest %{import_path}/lxd/node
+%gotest %{import_path}/lxd/task
+%gotest %{import_path}/lxd/types
+%gotest %{import_path}/lxd/util
+%gotest %{import_path}/shared
+%gotest %{import_path}/shared/cmd
+%gotest %{import_path}/shared/gnuflag
+%gotest %{import_path}/shared/idmap
+%gotest %{import_path}/shared/osarch
+%gotest %{import_path}/shared/version
 %endif
 
 %pre
@@ -351,8 +440,11 @@ exit 0
 %files devel -f devel.file-list
 %license COPYING
 %doc AUTHORS
-%dir %{gopath}/src/%{import_path}
-%dir %{gopath}/src/%{import_path1}
+%endif
+
+%if 0%{?with_unit_test}
+%files unit-test-devel -f unit-test.file-list
+%license COPYING
 %endif
 
 %files client

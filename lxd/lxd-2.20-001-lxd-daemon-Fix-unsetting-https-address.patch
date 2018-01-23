@@ -1,0 +1,37 @@
+commit ca3c94f04fe9ac52f5abf7518d9329006028324c
+Author: Stéphane Graber <stgraber@ubuntu.com>
+Date:   Thu Nov 16 15:33:39 2017 -0500
+
+    lxd/daemon: Fix unsetting https address
+    
+    Signed-off-by: Stéphane Graber <stgraber@ubuntu.com>
+
+diff --git a/lxd/endpoints/network.go b/lxd/endpoints/network.go
+index 4d306e4..01c169b 100644
+--- a/lxd/endpoints/network.go
++++ b/lxd/endpoints/network.go
+@@ -39,7 +39,10 @@ func (e *Endpoints) NetworkAddress() string {
+ // NetworkUpdateAddress updates the address for the network endpoint, shutting
+ // it down and restarting it.
+ func (e *Endpoints) NetworkUpdateAddress(address string) error {
+-	address = util.CanonicalNetworkAddress(address)
++	if address != "" {
++		address = util.CanonicalNetworkAddress(address)
++	}
++
+ 	if address == e.NetworkAddress() {
+ 		return nil
+ 	}
+@@ -68,8 +71,10 @@ func (e *Endpoints) NetworkUpdateAddress(address string) error {
+ 
+ 	e.closeListener(network)
+ 
+-	e.listeners[network] = networkTLSListener(listener, e.cert)
+-	e.serveHTTP(network)
++	if address != "" {
++		e.listeners[network] = networkTLSListener(listener, e.cert)
++		e.serveHTTP(network)
++	}
+ 
+ 	return nil
+ }

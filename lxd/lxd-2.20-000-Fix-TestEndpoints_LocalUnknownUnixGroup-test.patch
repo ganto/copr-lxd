@@ -1,0 +1,24 @@
+commit 05fb842a30f9bcc4545a23c9bc26c5d95b66441f
+Author: Reto Gantenbein <reto.gantenbein@linuxmonk.ch>
+Date:   Tue Jan 23 07:16:56 2018 +0100
+
+    Update error string printed when group doesn't exist
+    
+    The group lookup is done by GroupId() in shared/util_linux.go.
+    There it would return the error string "failed group lookup: %s"
+    and the errno string. The errno is set by the C function getgrnam_r()
+    which returns ENOENT if the group doesn't exist.
+
+diff --git a/lxd/endpoints/local_test.go b/lxd/endpoints/local_test.go
+index e409734e..708fe50a 100644
+--- a/lxd/endpoints/local_test.go
++++ b/lxd/endpoints/local_test.go
+@@ -70,7 +70,7 @@ func TestEndpoints_LocalUnknownUnixGroup(t *testing.T) {
+ 	err := endpoints.Up(config)
+ 
+ 	assert.EqualError(
+-		t, err, "local endpoint: cannot get group ID of 'xquibaz': unknown group xquibaz")
++		t, err, "local endpoint: cannot get group ID of 'xquibaz': failed group lookup: no such file or directory")
+ }
+ 
+ // If another LXD endpoints is already listening on the unix socket, an error is
