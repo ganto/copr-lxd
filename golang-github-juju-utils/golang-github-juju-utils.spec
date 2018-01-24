@@ -31,7 +31,7 @@
 
 Name:           golang-%{provider}-%{project}-%{repo}
 Version:        0
-Release:        0.3.%{commitdate}git%{shortcommit}%{?dist}
+Release:        0.4.%{commitdate}git%{shortcommit}%{?dist}
 Summary:        General utility functions
 License:        LGPLv3
 URL:            https://%{provider_prefix}
@@ -92,6 +92,7 @@ Requires:       golang(golang.org/x/crypto/ssh)
 #Requires:       golang(golang.org/x/crypto/ssh/knownhosts)
 Requires:       golang(golang.org/x/crypto/ssh/terminal)
 Requires:       golang(gopkg.in/errgo.v1)
+Requires:       golang(gopkg.in/juju/names.v2)
 Requires:       golang(gopkg.in/mgo.v2)
 Requires:       golang(gopkg.in/tomb.v1)
 Requires:       golang(gopkg.in/yaml.v2)
