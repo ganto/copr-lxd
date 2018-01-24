@@ -279,6 +279,9 @@ export GOPATH=%{buildroot}/%{gopath}:%{gopath}
 %endif
 
 %changelog
+* Wed Jan 24 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0-0.4.20171025git9b65c33
+- Add missing development dependency
+
 * Thu Jan 11 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 0-0.3.20171025git9b65c33
 - Update incomplete 'Fix-NoSuchUserErrRegexp' patch
 
