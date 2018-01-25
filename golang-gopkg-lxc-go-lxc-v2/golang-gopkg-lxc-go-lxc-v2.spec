@@ -27,15 +27,15 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     gopkg.in/lxc/go-lxc.v2
 %global gimport_path    %{provider_prefix}
-%global commit          99ba61b9d6c9df1239f9ee43c48903a214d2cd34
-%global commitdate      20171109
+%global commit          a7d112aed2f5f57f565d6e557671eeef7e76811c
+%global commitdate      20171215
 %global shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
 
 Name:           golang-gopkg-%{project}-%{repo}-v2
 Version:        2
-Release:        0.1.%{commitdate}git%{shortcommit}%{?dist}
+Release:        0.2.%{commitdate}git%{shortcommit}%{?dist}
 Summary:        Go bindings for liblxc
 License:        LGPLv2 with exceptions
 URL:            https://%{provider_prefix}
@@ -60,6 +60,8 @@ BuildArch:     noarch
 Requires:      lxc-devel
 
 Provides:      golang(%{import_path}) = %{version}-%{release}
+
+Conflicts:     lxd-devel <= 2.19-2%{?dist}
 
 %description devel
 This package implements Go bindings for the LXC C
