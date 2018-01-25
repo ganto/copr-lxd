@@ -1,0 +1,120 @@
+commit 419fa4c39bbe0f12a35520fe22afecb791a252d8
+Author: Stéphane Graber <stgraber@ubuntu.com>
+Date:   Fri Dec 22 14:40:26 2017 -0500
+
+    containers: Fix device names containing slashes
+    
+    Signed-off-by: Stéphane Graber <stgraber@ubuntu.com>
+
+diff --git a/lxd/container_lxc.go b/lxd/container_lxc.go
+index 05d10efe..efe317fb 100644
+--- a/lxd/container_lxc.go
++++ b/lxd/container_lxc.go
+@@ -1376,7 +1376,7 @@ func (c *containerLXC) initLXC(config bool) error {
+ 				destPath = m["source"]
+ 			}
+ 			relativeDestPath := strings.TrimPrefix(destPath, "/")
+-			sourceDevPath := filepath.Join(c.DevicesPath(), fmt.Sprintf("unix.%s.%s", k, strings.Replace(relativeDestPath, "/", "-", -1)))
++			sourceDevPath := filepath.Join(c.DevicesPath(), fmt.Sprintf("unix.%s.%s", strings.Replace(k, "/", "-", -1), strings.Replace(relativeDestPath, "/", "-", -1)))
+ 
+ 			// inform liblxc about the mount
+ 			err = lxcSetConfigItem(cc, "lxc.mount.entry",
+@@ -1495,7 +1495,7 @@ func (c *containerLXC) initLXC(config bool) error {
+ 			destPath := m["path"]
+ 			relativeDestPath := strings.TrimPrefix(destPath, "/")
+ 
+-			sourceDevPath := filepath.Join(c.DevicesPath(), fmt.Sprintf("disk.%s.%s", k, strings.Replace(relativeDestPath, "/", "-", -1)))
++			sourceDevPath := filepath.Join(c.DevicesPath(), fmt.Sprintf("disk.%s.%s", strings.Replace(k, "/", "-", -1), strings.Replace(relativeDestPath, "/", "-", -1)))
+ 
+ 			// Various option checks
+ 			isOptional := shared.IsTrue(m["optional"])
+@@ -5909,7 +5909,7 @@ func (c *containerLXC) removeMount(mount string) error {
+ // Check if the unix device already exists.
+ func (c *containerLXC) deviceExists(prefix string, path string) bool {
+ 	relativeDestPath := strings.TrimPrefix(path, "/")
+-	devName := fmt.Sprintf("%s.%s", prefix, strings.Replace(relativeDestPath, "/", "-", -1))
++	devName := fmt.Sprintf("%s.%s", strings.Replace(prefix, "/", "-", -1), strings.Replace(relativeDestPath, "/", "-", -1))
+ 	devPath := filepath.Join(c.DevicesPath(), devName)
+ 
+ 	return shared.PathExists(devPath)
+@@ -6003,7 +6003,7 @@ func (c *containerLXC) createUnixDevice(prefix string, m types.Device) ([]string
+ 		destPath = m["source"]
+ 	}
+ 	relativeDestPath := strings.TrimPrefix(destPath, "/")
+-	devName := fmt.Sprintf("%s.%s", prefix, strings.Replace(relativeDestPath, "/", "-", -1))
++	devName := fmt.Sprintf("%s.%s", strings.Replace(prefix, "/", "-", -1), strings.Replace(relativeDestPath, "/", "-", -1))
+ 	devPath := filepath.Join(c.DevicesPath(), devName)
+ 
+ 	// Create the new entry
+@@ -6163,7 +6163,7 @@ func (c *containerLXC) removeUnixDevice(prefix string, m types.Device, eject boo
+ 		destPath = m["source"]
+ 	}
+ 	relativeDestPath := strings.TrimPrefix(destPath, "/")
+-	devName := fmt.Sprintf("%s.%s", prefix, strings.Replace(relativeDestPath, "/", "-", -1))
++	devName := fmt.Sprintf("%s.%s", strings.Replace(prefix, "/", "-", -1), strings.Replace(relativeDestPath, "/", "-", -1))
+ 	devPath := filepath.Join(c.DevicesPath(), devName)
+ 
+ 	if dType == "" || dMajor < 0 || dMinor < 0 {
+@@ -7048,7 +7048,7 @@ func (c *containerLXC) removeNetworkDevice(name string, m types.Device) error {
+ func (c *containerLXC) createDiskDevice(name string, m types.Device) (string, error) {
+ 	// source paths
+ 	relativeDestPath := strings.TrimPrefix(m["path"], "/")
+-	devName := fmt.Sprintf("disk.%s.%s", name, strings.Replace(relativeDestPath, "/", "-", -1))
++	devName := fmt.Sprintf("disk.%s.%s", strings.Replace(name, "/", "-", -1), strings.Replace(relativeDestPath, "/", "-", -1))
+ 	devPath := filepath.Join(c.DevicesPath(), devName)
+ 	srcPath := shared.HostPath(m["source"])
+ 
+@@ -7251,7 +7251,7 @@ func (c *containerLXC) removeDiskDevice(name string, m types.Device) error {
+ 
+ 	// Figure out the paths
+ 	destPath := strings.TrimPrefix(m["path"], "/")
+-	devName := fmt.Sprintf("disk.%s.%s", name, strings.Replace(destPath, "/", "-", -1))
++	devName := fmt.Sprintf("disk.%s.%s", strings.Replace(name, "/", "-", -1), strings.Replace(destPath, "/", "-", -1))
+ 	devPath := filepath.Join(c.DevicesPath(), devName)
+ 
+ 	// The disk device doesn't exist.
+diff --git a/lxd/patches.go b/lxd/patches.go
+index 932fdb56..187b9c03 100644
+--- a/lxd/patches.go
++++ b/lxd/patches.go
+@@ -2569,10 +2569,11 @@ func patchDevicesNewNamingScheme(name string, d *Daemon) error {
+ 
+ 			// We only care about unix-{char,block} and disk devices
+ 			// since other devices don't create on-disk files.
+-			if d["type"] != "disk" && !shared.StringInSlice(d["type"], []string{"unix-char", "unix-block"}) {
++			if !shared.StringInSlice(d["type"], []string{"disk", "unix-char", "unix-block"}) {
+ 				continue
+ 			}
+ 
++			// Handle disks
+ 			if d["type"] == "disk" {
+ 				relativeDestPath := strings.TrimPrefix(d["path"], "/")
+ 				hyphenatedDevName := strings.Replace(relativeDestPath, "/", "-", -1)
+@@ -2592,14 +2593,17 @@ func patchDevicesNewNamingScheme(name string, d *Daemon) error {
+ 				syscall.Unmount(devPathLegacy, syscall.MNT_DETACH)
+ 
+ 				// Switch device to new device naming scheme.
+-				devPathNew := filepath.Join(devicesPath, fmt.Sprintf("disk.%s.%s", name, hyphenatedDevName))
++				devPathNew := filepath.Join(devicesPath, fmt.Sprintf("disk.%s.%s", strings.Replace(name, "/", "-", -1), hyphenatedDevName))
+ 				err = os.Rename(devPathLegacy, devPathNew)
+ 				if err != nil {
+ 					logger.Errorf("Failed to rename device from \"%s\" to \"%s\": %s", devPathLegacy, devPathNew, err)
+ 					return err
+ 				}
++
++				continue
+ 			}
+ 
++			// Handle unix devices
+ 			srcPath := d["source"]
+ 			if srcPath == "" {
+ 				srcPath = d["path"]
+@@ -2624,7 +2628,7 @@ func patchDevicesNewNamingScheme(name string, d *Daemon) error {
+ 
+ 			relativeSrcPathNew := strings.TrimPrefix(srcPath, "/")
+ 			hyphenatedDevNameNew := strings.Replace(relativeSrcPathNew, "/", "-", -1)
+-			devPathNew := filepath.Join(devicesPath, fmt.Sprintf("unix.%s.%s", name, hyphenatedDevNameNew))
++			devPathNew := filepath.Join(devicesPath, fmt.Sprintf("unix.%s.%s", strings.Replace(name, "/", "-", -1), hyphenatedDevNameNew))
+ 			// Switch device to new device naming scheme.
+ 			err = os.Rename(devPathLegacy, devPathNew)
+ 			if err != nil {

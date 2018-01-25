@@ -25,7 +25,7 @@
 %global import_path     %{provider_prefix}
 
 Name:          lxd
-Version:       2.20
+Version:       2.21
 Release:       1%{?dist}
 Summary:       Container hypervisor based on LXC
 License:       ASL 2.0
@@ -37,8 +37,11 @@ Source3:       lxd.lxd-containers.service
 Source4:       lxd.dnsmasq
 Source5:       lxd.logrotate
 Source6:       shutdown
+Source7:       lxd.sysctl
 Patch0:        lxd-2.20-000-Fix-TestEndpoints_LocalUnknownUnixGroup-test.patch
-Patch1:        lxd-2.20-001-lxd-daemon-Fix-unsetting-https-address.patch
+Patch1:        lxd-2.21-001-containers-Fix-device-names-containing-slashes.patch
+Patch2:        lxd-2.21-002-lxd-containers-Fix-tc-egress-rules.patch
+Patch3:        lxd-2.21-003-lxc-exec-Fix-typo.patch
 
 # e.g. el6 has ppc64 arch without gcc-go, so EA tag is required
 ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 aarch64 %{arm}}
@@ -56,6 +59,7 @@ BuildRequires: golang(github.com/golang/protobuf/proto)
 BuildRequires: golang(github.com/gorilla/mux)
 BuildRequires: golang(github.com/gorilla/websocket) >= 1.1.0
 BuildRequires: golang(github.com/gosexy/gettext)
+BuildRequires: golang(github.com/juju/gomaasapi)
 BuildRequires: golang(github.com/juju/idmclient)
 BuildRequires: golang(github.com/juju/persistent-cookiejar)
 BuildRequires: golang(github.com/mattn/go-colorable)
@@ -67,8 +71,7 @@ BuildRequires: golang(golang.org/x/crypto/scrypt)
 BuildRequires: golang(golang.org/x/crypto/ssh/terminal)
 BuildRequires: golang(golang.org/x/net/context)
 BuildRequires: golang(gopkg.in/flosch/pongo2.v3)
-# Change to golang(gopkg.in/lxc/go-lxc.v2) once lxd-devel providing this is gone
-BuildRequires: golang-gopkg-lxc-go-lxc-v2-devel
+BuildRequires: golang(gopkg.in/lxc/go-lxc.v2) >= 2-0.2.20171215gita7d112a
 BuildRequires: golang(gopkg.in/macaroon-bakery.v2/bakery)
 BuildRequires: golang(gopkg.in/macaroon-bakery.v2/bakery/checkers)
 BuildRequires: golang(gopkg.in/macaroon-bakery.v2/bakery/identchecker)
@@ -120,6 +123,7 @@ BuildRequires: golang(github.com/golang/protobuf/proto)
 BuildRequires: golang(github.com/gorilla/mux)
 BuildRequires: golang(github.com/gorilla/websocket) >= 1.1.0
 BuildRequires: golang(github.com/gosexy/gettext)
+BuildRequires: golang(github.com/juju/gomaasapi)
 BuildRequires: golang(github.com/juju/idmclient)
 BuildRequires: golang(github.com/juju/persistent-cookiejar)
 BuildRequires: golang(github.com/mattn/go-colorable)
@@ -136,8 +140,7 @@ BuildRequires: golang(golang.org/x/crypto/ssh/terminal)
 BuildRequires: golang(golang.org/x/net/context)
 BuildRequires: golang(gopkg.in/flosch/pongo2.v3)
 BuildRequires: golang(gopkg.in/juju/environschema.v1/form)
-# Change to golang(gopkg.in/lxc/go-lxc.v2) once lxd-devel providing this is gone
-BuildRequires: golang-gopkg-lxc-go-lxc-v2-devel
+BuildRequires: golang(gopkg.in/lxc/go-lxc.v2) >= 2-0.2.20171215gita7d112a
 BuildRequires: golang(gopkg.in/macaroon-bakery.v2/bakery)
 BuildRequires: golang(gopkg.in/macaroon-bakery.v2/bakery/checkers)
 BuildRequires: golang(gopkg.in/macaroon-bakery.v2/bakery/identchecker)
@@ -152,6 +155,7 @@ Requires:      golang(github.com/golang/protobuf/proto)
 Requires:      golang(github.com/gorilla/mux)
 Requires:      golang(github.com/gorilla/websocket) >= 1.1.0
 Requires:      golang(github.com/gosexy/gettext)
+Requires:      golang(github.com/juju/gomaasapi)
 Requires:      golang(github.com/juju/idmclient)
 Requires:      golang(github.com/juju/persistent-cookiejar)
 Requires:      golang(github.com/mattn/go-colorable)
@@ -165,7 +169,7 @@ Requires:      golang(golang.org/x/crypto/ssh/terminal)
 Requires:      golang(golang.org/x/net/context)
 Requires:      golang(gopkg.in/flosch/pongo2.v3)
 Requires:      golang(gopkg.in/juju/environschema.v1/form)
-# Change to golang(gopkg.in/lxc/go-lxc.v2) once lxd-devel providing this is gone
+Requires:      golang(gopkg.in/lxc/go-lxc.v2) >= 2-0.2.20171215gita7d112a
 Requires:      golang-gopkg-lxc-go-lxc-v2-devel
 Requires:      golang(gopkg.in/macaroon-bakery.v2/bakery)
 Requires:      golang(gopkg.in/macaroon-bakery.v2/bakery/checkers)
@@ -184,6 +188,7 @@ Provides:      golang(%{import_path}/lxd/db/query) = %{version}-%{release}
 Provides:      golang(%{import_path}/lxd/db/schema) = %{version}-%{release}
 Provides:      golang(%{import_path}/lxd/debug) = %{version}-%{release}
 Provides:      golang(%{import_path}/lxd/endpoints) = %{version}-%{release}
+Provides:      golang(%{import_path}/lxd/maas) = %{version}-%{release}
 Provides:      golang(%{import_path}/lxd/node) = %{version}-%{release}
 Provides:      golang(%{import_path}/lxd/state) = %{version}-%{release}
 Provides:      golang(%{import_path}/lxd/sys) = %{version}-%{release}
@@ -317,6 +322,8 @@ install -d %{buildroot}%{_sysconfdir}/dnsmasq.d
 install -p -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/dnsmasq.d/lxd
 install -d %{buildroot}%{_sysconfdir}/logrotate.d
 install -p -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/logrotate.d/lxd
+install -d %{buildroot}%{_sysconfdir}/sysctl.d
+install -p -m 644 %{SOURCE7} %{buildroot}%{_sysconfdir}/sysctl.d/10-lxd-inotify.conf
 
 # install bash completion
 install -dp %{buildroot}%{_datadir}/bash-completion/completions
@@ -427,6 +434,7 @@ exit 0
 %doc AUTHORS
 %config(noreplace) %{_sysconfdir}/dnsmasq.d/lxd
 %config(noreplace) %{_sysconfdir}/logrotate.d/lxd
+%config(noreplace) %{_sysconfdir}/sysctl.d/10-lxd-inotify.conf
 %{_bindir}/%{name}
 %{_unitdir}/*
 %dir /usr/lib/%{name}

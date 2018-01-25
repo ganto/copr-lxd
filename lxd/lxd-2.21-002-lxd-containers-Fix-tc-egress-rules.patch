@@ -1,0 +1,21 @@
+commit a6eaf97fde1c8392c7cd6f8ecbafa11a9db00395
+Author: Stéphane Graber <stgraber@ubuntu.com>
+Date:   Thu Dec 21 17:49:44 2017 -0500
+
+    lxd/containers: Fix tc egress rules
+    
+    Signed-off-by: Stéphane Graber <stgraber@ubuntu.com>
+
+diff --git a/lxd/container_lxc.go b/lxd/container_lxc.go
+index bed1fb40..b31807aa 100644
+--- a/lxd/container_lxc.go
++++ b/lxd/container_lxc.go
+@@ -7564,7 +7564,7 @@ func (c *containerLXC) setNetworkLimits(name string, m types.Device) error {
+ 			return fmt.Errorf("Failed to create ingress tc qdisc: %s", out)
+ 		}
+ 
+-		out, err = shared.RunCommand("tc", "filter", "add", "dev", veth, "parent", "ffff:0", "protocol", "all", "u32", "match", "u32", "0", "0", "police", "rate", fmt.Sprintf("%dbit", egressInt), "burst", "1024k", "mtu", "64kb", "drop", "flowid", ":1")
++		out, err = shared.RunCommand("tc", "filter", "add", "dev", veth, "parent", "ffff:0", "protocol", "all", "u32", "match", "u32", "0", "0", "police", "rate", fmt.Sprintf("%dbit", egressInt), "burst", "1024k", "mtu", "64kb", "drop")
+ 		if err != nil {
+ 			return fmt.Errorf("Failed to create ingress tc qdisc: %s", out)
+ 		}

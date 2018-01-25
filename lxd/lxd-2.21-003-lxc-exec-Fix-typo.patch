@@ -1,0 +1,395 @@
+commit ccb9b42a926fb67d66cda94ad0e3abb145a230ce
+Author: Stéphane Graber <stgraber@ubuntu.com>
+Date:   Tue Dec 19 19:32:41 2017 -0500
+
+    lxc/exec: Fix typo
+    
+    Signed-off-by: Stéphane Graber <stgraber@ubuntu.com>
+
+diff --git a/lxc/exec.go b/lxc/exec.go
+index b0865444..42b7a32f 100644
+--- a/lxc/exec.go
++++ b/lxc/exec.go
+@@ -56,7 +56,7 @@ func (c *execCmd) usage() string {
+ Execute commands in containers.
+ 
+ The command is executed directly using exec, so there is no shell and shell patterns (variables, file redirects, ...)
+-won't be understood. If you need a shell environment you need to execute the shell executeable, passing the shell commands
++won't be understood. If you need a shell environment you need to execute the shell executable, passing the shell commands
+ as arguments, for example:
+ 
+     lxc exec <container> -- sh -c "cd /tmp && pwd"
+diff --git a/po/de.po b/po/de.po
+index b033ca82..6e6a0b1f 100644
+--- a/po/de.po
++++ b/po/de.po
+@@ -7,7 +7,7 @@ msgid ""
+ msgstr ""
+ "Project-Id-Version: LXD\n"
+ "Report-Msgid-Bugs-To: lxc-devel@lists.linuxcontainers.org\n"
+-"POT-Creation-Date: 2017-12-15 12:26+0100\n"
++"POT-Creation-Date: 2017-12-19 19:32-0500\n"
+ "PO-Revision-Date: 2017-02-14 17:11+0000\n"
+ "Last-Translator: Tim Rose <tim@netlope.de>\n"
+ "Language-Team: German <https://hosted.weblate.org/projects/linux-containers/"
+@@ -1649,7 +1649,7 @@ msgid ""
+ "The command is executed directly using exec, so there is no shell and shell "
+ "patterns (variables, file redirects, ...)\n"
+ "won't be understood. If you need a shell environment you need to execute the "
+-"shell executeable, passing the shell commands\n"
++"shell executable, passing the shell commands\n"
+ "as arguments, for example:\n"
+ "\n"
+ "    lxc exec <container> -- sh -c \"cd /tmp && pwd\"\n"
+diff --git a/po/el.po b/po/el.po
+index af41b688..1d246d01 100644
+--- a/po/el.po
++++ b/po/el.po
+@@ -7,7 +7,7 @@ msgid ""
+ msgstr ""
+ "Project-Id-Version: lxd\n"
+ "Report-Msgid-Bugs-To: lxc-devel@lists.linuxcontainers.org\n"
+-"POT-Creation-Date: 2017-12-15 12:26+0100\n"
++"POT-Creation-Date: 2017-12-19 19:32-0500\n"
+ "PO-Revision-Date: 2017-02-14 08:00+0000\n"
+ "Last-Translator: Simos Xenitellis <simos.65@gmail.com>\n"
+ "Language-Team: Greek <https://hosted.weblate.org/projects/linux-containers/"
+@@ -1450,7 +1450,7 @@ msgid ""
+ "The command is executed directly using exec, so there is no shell and shell "
+ "patterns (variables, file redirects, ...)\n"
+ "won't be understood. If you need a shell environment you need to execute the "
+-"shell executeable, passing the shell commands\n"
++"shell executable, passing the shell commands\n"
+ "as arguments, for example:\n"
+ "\n"
+ "    lxc exec <container> -- sh -c \"cd /tmp && pwd\"\n"
+diff --git a/po/fi.po b/po/fi.po
+index 3eb847bd..3f2c391f 100644
+--- a/po/fi.po
++++ b/po/fi.po
+@@ -7,7 +7,7 @@ msgid ""
+ msgstr ""
+ "Project-Id-Version: lxd\n"
+ "Report-Msgid-Bugs-To: lxc-devel@lists.linuxcontainers.org\n"
+-"POT-Creation-Date: 2017-12-19 16:41-0500\n"
++"POT-Creation-Date: 2017-12-19 19:32-0500\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: Automatically generated\n"
+ "Language-Team: none\n"
+@@ -1443,7 +1443,7 @@ msgid ""
+ "The command is executed directly using exec, so there is no shell and shell "
+ "patterns (variables, file redirects, ...)\n"
+ "won't be understood. If you need a shell environment you need to execute the "
+-"shell executeable, passing the shell commands\n"
++"shell executable, passing the shell commands\n"
+ "as arguments, for example:\n"
+ "\n"
+ "    lxc exec <container> -- sh -c \"cd /tmp && pwd\"\n"
+diff --git a/po/fr.po b/po/fr.po
+index 835ea0ca..c89c5c89 100644
+--- a/po/fr.po
++++ b/po/fr.po
+@@ -7,7 +7,7 @@ msgid ""
+ msgstr ""
+ "Project-Id-Version: LXD\n"
+ "Report-Msgid-Bugs-To: lxc-devel@lists.linuxcontainers.org\n"
+-"POT-Creation-Date: 2017-12-15 12:26+0100\n"
++"POT-Creation-Date: 2017-12-19 19:32-0500\n"
+ "PO-Revision-Date: 2017-10-26 15:46+0000\n"
+ "Last-Translator: Alban Vidal <alban.vidal@zordhak.fr>\n"
+ "Language-Team: French <https://hosted.weblate.org/projects/linux-containers/"
+@@ -1659,7 +1659,7 @@ msgid ""
+ "The command is executed directly using exec, so there is no shell and shell "
+ "patterns (variables, file redirects, ...)\n"
+ "won't be understood. If you need a shell environment you need to execute the "
+-"shell executeable, passing the shell commands\n"
++"shell executable, passing the shell commands\n"
+ "as arguments, for example:\n"
+ "\n"
+ "    lxc exec <container> -- sh -c \"cd /tmp && pwd\"\n"
+diff --git a/po/id.po b/po/id.po
+index 3aa1ba53..842cfaf1 100644
+--- a/po/id.po
++++ b/po/id.po
+@@ -7,7 +7,7 @@ msgid ""
+ msgstr ""
+ "Project-Id-Version: lxd\n"
+ "Report-Msgid-Bugs-To: lxc-devel@lists.linuxcontainers.org\n"
+-"POT-Creation-Date: 2017-12-15 12:26+0100\n"
++"POT-Creation-Date: 2017-12-19 19:32-0500\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: Automatically generated\n"
+ "Language-Team: none\n"
+@@ -1443,7 +1443,7 @@ msgid ""
+ "The command is executed directly using exec, so there is no shell and shell "
+ "patterns (variables, file redirects, ...)\n"
+ "won't be understood. If you need a shell environment you need to execute the "
+-"shell executeable, passing the shell commands\n"
++"shell executable, passing the shell commands\n"
+ "as arguments, for example:\n"
+ "\n"
+ "    lxc exec <container> -- sh -c \"cd /tmp && pwd\"\n"
+diff --git a/po/it.po b/po/it.po
+index dcb8c381..981e51d6 100644
+--- a/po/it.po
++++ b/po/it.po
+@@ -7,7 +7,7 @@ msgid ""
+ msgstr ""
+ "Project-Id-Version: lxd\n"
+ "Report-Msgid-Bugs-To: lxc-devel@lists.linuxcontainers.org\n"
+-"POT-Creation-Date: 2017-12-15 12:26+0100\n"
++"POT-Creation-Date: 2017-12-19 19:32-0500\n"
+ "PO-Revision-Date: 2017-08-18 14:22+0000\n"
+ "Last-Translator: Alberto Donato <alberto.donato@gmail.com>\n"
+ "Language-Team: Italian <https://hosted.weblate.org/projects/linux-containers/"
+@@ -1469,7 +1469,7 @@ msgid ""
+ "The command is executed directly using exec, so there is no shell and shell "
+ "patterns (variables, file redirects, ...)\n"
+ "won't be understood. If you need a shell environment you need to execute the "
+-"shell executeable, passing the shell commands\n"
++"shell executable, passing the shell commands\n"
+ "as arguments, for example:\n"
+ "\n"
+ "    lxc exec <container> -- sh -c \"cd /tmp && pwd\"\n"
+diff --git a/po/ja.po b/po/ja.po
+index ee5170af..aab506af 100644
+--- a/po/ja.po
++++ b/po/ja.po
+@@ -7,7 +7,7 @@ msgid ""
+ msgstr ""
+ "Project-Id-Version: LXD\n"
+ "Report-Msgid-Bugs-To: lxc-devel@lists.linuxcontainers.org\n"
+-"POT-Creation-Date: 2017-12-15 12:26+0100\n"
++"POT-Creation-Date: 2017-12-19 19:32-0500\n"
+ "PO-Revision-Date: 2017-09-28 20:29+0000\n"
+ "Last-Translator: KATOH Yasufumi <karma@jazz.email.ne.jp>\n"
+ "Language-Team: Japanese <https://hosted.weblate.org/projects/linux-"
+@@ -1584,7 +1584,7 @@ msgid ""
+ "The command is executed directly using exec, so there is no shell and shell "
+ "patterns (variables, file redirects, ...)\n"
+ "won't be understood. If you need a shell environment you need to execute the "
+-"shell executeable, passing the shell commands\n"
++"shell executable, passing the shell commands\n"
+ "as arguments, for example:\n"
+ "\n"
+ "    lxc exec <container> -- sh -c \"cd /tmp && pwd\"\n"
+diff --git a/po/lxd.pot b/po/lxd.pot
+index b57731d1..a8c6ee04 100644
+--- a/po/lxd.pot
++++ b/po/lxd.pot
+@@ -7,7 +7,7 @@
+ msgid   ""
+ msgstr  "Project-Id-Version: lxd\n"
+         "Report-Msgid-Bugs-To: lxc-devel@lists.linuxcontainers.org\n"
+-        "POT-Creation-Date: 2017-12-19 16:41-0500\n"
++        "POT-Creation-Date: 2017-12-19 19:32-0500\n"
+         "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+         "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+         "Language-Team: LANGUAGE <LL@li.org>\n"
+@@ -1412,7 +1412,7 @@ msgid   "Usage: lxc exec [<remote>:]<container> [-t] [-T] [-n] [--mode=auto|inte
+         "Execute commands in containers.\n"
+         "\n"
+         "The command is executed directly using exec, so there is no shell and shell patterns (variables, file redirects, ...)\n"
+-        "won't be understood. If you need a shell environment you need to execute the shell executeable, passing the shell commands\n"
++        "won't be understood. If you need a shell environment you need to execute the shell executable, passing the shell commands\n"
+         "as arguments, for example:\n"
+         "\n"
+         "    lxc exec <container> -- sh -c \"cd /tmp && pwd\"\n"
+diff --git a/po/nb_NO.po b/po/nb_NO.po
+index 07200c23..a6516249 100644
+--- a/po/nb_NO.po
++++ b/po/nb_NO.po
+@@ -7,7 +7,7 @@ msgid ""
+ msgstr ""
+ "Project-Id-Version: lxd\n"
+ "Report-Msgid-Bugs-To: lxc-devel@lists.linuxcontainers.org\n"
+-"POT-Creation-Date: 2017-12-15 12:26+0100\n"
++"POT-Creation-Date: 2017-12-19 19:32-0500\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: Automatically generated\n"
+ "Language-Team: none\n"
+@@ -1443,7 +1443,7 @@ msgid ""
+ "The command is executed directly using exec, so there is no shell and shell "
+ "patterns (variables, file redirects, ...)\n"
+ "won't be understood. If you need a shell environment you need to execute the "
+-"shell executeable, passing the shell commands\n"
++"shell executable, passing the shell commands\n"
+ "as arguments, for example:\n"
+ "\n"
+ "    lxc exec <container> -- sh -c \"cd /tmp && pwd\"\n"
+diff --git a/po/nl.po b/po/nl.po
+index 3f5eda40..2f64fdd5 100644
+--- a/po/nl.po
++++ b/po/nl.po
+@@ -7,7 +7,7 @@ msgid ""
+ msgstr ""
+ "Project-Id-Version: lxd\n"
+ "Report-Msgid-Bugs-To: lxc-devel@lists.linuxcontainers.org\n"
+-"POT-Creation-Date: 2017-12-15 12:26+0100\n"
++"POT-Creation-Date: 2017-12-19 19:32-0500\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: Automatically generated\n"
+ "Language-Team: none\n"
+@@ -1443,7 +1443,7 @@ msgid ""
+ "The command is executed directly using exec, so there is no shell and shell "
+ "patterns (variables, file redirects, ...)\n"
+ "won't be understood. If you need a shell environment you need to execute the "
+-"shell executeable, passing the shell commands\n"
++"shell executable, passing the shell commands\n"
+ "as arguments, for example:\n"
+ "\n"
+ "    lxc exec <container> -- sh -c \"cd /tmp && pwd\"\n"
+diff --git a/po/pt_BR.po b/po/pt_BR.po
+index ce88e479..8cbd0cf8 100644
+--- a/po/pt_BR.po
++++ b/po/pt_BR.po
+@@ -7,7 +7,7 @@ msgid ""
+ msgstr ""
+ "Project-Id-Version: lxd\n"
+ "Report-Msgid-Bugs-To: lxc-devel@lists.linuxcontainers.org\n"
+-"POT-Creation-Date: 2017-12-15 12:26+0100\n"
++"POT-Creation-Date: 2017-12-19 19:32-0500\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: Automatically generated\n"
+ "Language-Team: none\n"
+@@ -1443,7 +1443,7 @@ msgid ""
+ "The command is executed directly using exec, so there is no shell and shell "
+ "patterns (variables, file redirects, ...)\n"
+ "won't be understood. If you need a shell environment you need to execute the "
+-"shell executeable, passing the shell commands\n"
++"shell executable, passing the shell commands\n"
+ "as arguments, for example:\n"
+ "\n"
+ "    lxc exec <container> -- sh -c \"cd /tmp && pwd\"\n"
+diff --git a/po/ru.po b/po/ru.po
+index e8d1da04..099011d8 100644
+--- a/po/ru.po
++++ b/po/ru.po
+@@ -7,7 +7,7 @@ msgid ""
+ msgstr ""
+ "Project-Id-Version: lxd\n"
+ "Report-Msgid-Bugs-To: lxc-devel@lists.linuxcontainers.org\n"
+-"POT-Creation-Date: 2017-12-15 12:26+0100\n"
++"POT-Creation-Date: 2017-12-19 19:32-0500\n"
+ "PO-Revision-Date: 2017-09-05 16:48+0000\n"
+ "Last-Translator: Ilya Yakimavets <ilya.yakimavets@backend.expert>\n"
+ "Language-Team: Russian <https://hosted.weblate.org/projects/linux-containers/"
+@@ -1542,7 +1542,7 @@ msgid ""
+ "The command is executed directly using exec, so there is no shell and shell "
+ "patterns (variables, file redirects, ...)\n"
+ "won't be understood. If you need a shell environment you need to execute the "
+-"shell executeable, passing the shell commands\n"
++"shell executable, passing the shell commands\n"
+ "as arguments, for example:\n"
+ "\n"
+ "    lxc exec <container> -- sh -c \"cd /tmp && pwd\"\n"
+diff --git a/po/sr.po b/po/sr.po
+index 330cd210..004a2b6a 100644
+--- a/po/sr.po
++++ b/po/sr.po
+@@ -7,7 +7,7 @@ msgid ""
+ msgstr ""
+ "Project-Id-Version: lxd\n"
+ "Report-Msgid-Bugs-To: lxc-devel@lists.linuxcontainers.org\n"
+-"POT-Creation-Date: 2017-12-15 12:26+0100\n"
++"POT-Creation-Date: 2017-12-19 19:32-0500\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: Automatically generated\n"
+ "Language-Team: none\n"
+@@ -1443,7 +1443,7 @@ msgid ""
+ "The command is executed directly using exec, so there is no shell and shell "
+ "patterns (variables, file redirects, ...)\n"
+ "won't be understood. If you need a shell environment you need to execute the "
+-"shell executeable, passing the shell commands\n"
++"shell executable, passing the shell commands\n"
+ "as arguments, for example:\n"
+ "\n"
+ "    lxc exec <container> -- sh -c \"cd /tmp && pwd\"\n"
+diff --git a/po/sv.po b/po/sv.po
+index 63a50d5d..74baf44b 100644
+--- a/po/sv.po
++++ b/po/sv.po
+@@ -7,7 +7,7 @@ msgid ""
+ msgstr ""
+ "Project-Id-Version: lxd\n"
+ "Report-Msgid-Bugs-To: lxc-devel@lists.linuxcontainers.org\n"
+-"POT-Creation-Date: 2017-12-15 12:26+0100\n"
++"POT-Creation-Date: 2017-12-19 19:32-0500\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: Automatically generated\n"
+ "Language-Team: none\n"
+@@ -1443,7 +1443,7 @@ msgid ""
+ "The command is executed directly using exec, so there is no shell and shell "
+ "patterns (variables, file redirects, ...)\n"
+ "won't be understood. If you need a shell environment you need to execute the "
+-"shell executeable, passing the shell commands\n"
++"shell executable, passing the shell commands\n"
+ "as arguments, for example:\n"
+ "\n"
+ "    lxc exec <container> -- sh -c \"cd /tmp && pwd\"\n"
+diff --git a/po/tr.po b/po/tr.po
+index 809576de..0d04ccc5 100644
+--- a/po/tr.po
++++ b/po/tr.po
+@@ -7,7 +7,7 @@ msgid ""
+ msgstr ""
+ "Project-Id-Version: lxd\n"
+ "Report-Msgid-Bugs-To: lxc-devel@lists.linuxcontainers.org\n"
+-"POT-Creation-Date: 2017-12-15 12:26+0100\n"
++"POT-Creation-Date: 2017-12-19 19:32-0500\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: Automatically generated\n"
+ "Language-Team: none\n"
+@@ -1443,7 +1443,7 @@ msgid ""
+ "The command is executed directly using exec, so there is no shell and shell "
+ "patterns (variables, file redirects, ...)\n"
+ "won't be understood. If you need a shell environment you need to execute the "
+-"shell executeable, passing the shell commands\n"
++"shell executable, passing the shell commands\n"
+ "as arguments, for example:\n"
+ "\n"
+ "    lxc exec <container> -- sh -c \"cd /tmp && pwd\"\n"
+diff --git a/po/zh.po b/po/zh.po
+index 5a4f9e98..87fcf8b2 100644
+--- a/po/zh.po
++++ b/po/zh.po
+@@ -7,7 +7,7 @@ msgid ""
+ msgstr ""
+ "Project-Id-Version: lxd\n"
+ "Report-Msgid-Bugs-To: lxc-devel@lists.linuxcontainers.org\n"
+-"POT-Creation-Date: 2017-12-15 12:26+0100\n"
++"POT-Creation-Date: 2017-12-19 19:32-0500\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: Automatically generated\n"
+ "Language-Team: none\n"
+@@ -1443,7 +1443,7 @@ msgid ""
+ "The command is executed directly using exec, so there is no shell and shell "
+ "patterns (variables, file redirects, ...)\n"
+ "won't be understood. If you need a shell environment you need to execute the "
+-"shell executeable, passing the shell commands\n"
++"shell executable, passing the shell commands\n"
+ "as arguments, for example:\n"
+ "\n"
+ "    lxc exec <container> -- sh -c \"cd /tmp && pwd\"\n"
+diff --git a/po/zh_Hans.po b/po/zh_Hans.po
+index 6157ae69..e3cdb15c 100644
+--- a/po/zh_Hans.po
++++ b/po/zh_Hans.po
+@@ -7,7 +7,7 @@ msgid ""
+ msgstr ""
+ "Project-Id-Version: lxd\n"
+ "Report-Msgid-Bugs-To: lxc-devel@lists.linuxcontainers.org\n"
+-"POT-Creation-Date: 2017-12-15 12:26+0100\n"
++"POT-Creation-Date: 2017-12-19 19:32-0500\n"
+ "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+ "Last-Translator: Automatically generated\n"
+ "Language-Team: none\n"
+@@ -1443,7 +1443,7 @@ msgid ""
+ "The command is executed directly using exec, so there is no shell and shell "
+ "patterns (variables, file redirects, ...)\n"
+ "won't be understood. If you need a shell environment you need to execute the "
+-"shell executeable, passing the shell commands\n"
++"shell executable, passing the shell commands\n"
+ "as arguments, for example:\n"
+ "\n"
+ "    lxc exec <container> -- sh -c \"cd /tmp && pwd\"\n"
