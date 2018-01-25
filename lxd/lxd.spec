@@ -475,6 +475,9 @@ exit 0
 %doc doc/*
 
 %changelog
+* Thu Jan 25 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.21-1
+- Update to 2.21 (with patches from 2.21-0ubuntu2)
+
 * Tue Jan 23 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.20-1
 - Update to 2.20 (with patches from 2.20-0ubuntu4)
 - Major rework of the spec file
