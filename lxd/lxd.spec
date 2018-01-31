@@ -523,6 +523,12 @@ exit 0
 %doc doc/*
 
 %changelog
+* Wed Jan 31 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.21-2
+- Fix build with bundled go modules
+- Correctly specify scriptlet dependencies
+- Run systemd preun scriptlet
+- Use /usr/libexec instead of /usr/lib for helper script (GH #11)
+
 * Thu Jan 25 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.21-1
 - Update to 2.21 (with patches from 2.21-0ubuntu2)
 
