@@ -334,8 +334,8 @@ install -d %{buildroot}%{_unitdir}
 install -p -m 644 %{SOURCE1} %{buildroot}%{_unitdir}
 install -p -m 644 %{SOURCE2} %{buildroot}%{_unitdir}
 install -p -m 644 %{SOURCE3} %{buildroot}%{_unitdir}/%{name}-containers.service
-install -d %{buildroot}/usr/lib/%{name}
-install -p -m 755 %{SOURCE6} %{buildroot}/usr/lib/%{name}/shutdown
+install -d %{buildroot}%{_libexecdir}/%{name}
+install -p -m 755 %{SOURCE6} %{buildroot}%{_libexecdir}/%{name}/shutdown
 
 # install man-pages
 install -d %{buildroot}%{_mandir}/man1
@@ -437,8 +437,8 @@ exit 0
 %config(noreplace) %{_sysconfdir}/sysctl.d/10-lxd-inotify.conf
 %{_bindir}/%{name}
 %{_unitdir}/*
-%dir /usr/lib/%{name}
-/usr/lib/%{name}/*
+%dir %{_libexecdir}/%{name}
+%{_libexecdir}/%{name}/*
 %{_mandir}/man1/%{name}.1.gz
 %dir %{_localstatedir}/log/%{name}
 %defattr(-, root, root, 0711)
