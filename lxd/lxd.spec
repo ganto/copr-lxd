@@ -24,15 +24,15 @@
 %global provider_prefix %{provider}.%{provider_tld}/%{project}/%{repo}
 %global import_path     %{provider_prefix}
 
-Name:          lxd
+Name:          %{repo}
 Version:       2.21
 Release:       1%{?dist}
 Summary:       Container hypervisor based on LXC
 License:       ASL 2.0
 URL:           https://linuxcontainers.org/lxd
 Source0:       https://linuxcontainers.org/downloads/lxd/lxd-%{version}.tar.gz
-Source1:       lxd.socket
-Source2:       lxd.service
+Source1:       %{name}.socket
+Source2:       %{name}.service
 Source3:       lxd.lxd-containers.service
 Source4:       lxd.dnsmasq
 Source5:       lxd.logrotate
@@ -418,7 +418,7 @@ export GOPATH=%{buildroot}/%{gopath}:%{gopath}
 
 %pre
 # check for existence of lxd group, create it if not found
-getent group lxd > /dev/null || groupadd -f -r lxd
+getent group %{name} > /dev/null || groupadd -f -r %{name}
 exit 0
 
 %post
