@@ -93,6 +93,11 @@ Requires: tar
 Requires: xdelta
 Requires: xz
 
+Requires(pre):    shadow-utils
+Requires(post):   systemd
+Requires(preun):  systemd
+Requires(postun): systemd
+
 %if 0%{?fedora}
 Suggests: btrfs-progs
 Suggests: criu
@@ -420,6 +425,11 @@ exit 0
 %systemd_post %{name}.socket
 %systemd_post %{name}.service
 %systemd_post %{name}-container.service
+
+%preun
+%systemd_preun %{name}.socket
+%systemd_preun %{name}.service
+%systemd_preun %{name}-container.service
 
 %postun
 %systemd_postun %{name}.socket
