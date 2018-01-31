@@ -1,19 +1,40 @@
+# If any of the following macros should be set otherwise,
+# you can wrap any of them with the following conditions:
+# - %%if 0%%{centos} == 7
+# - %%if 0%%{?rhel} == 7
+# - %%if 0%%{?fedora} == 23
+# Or just test for particular distribution:
+# - %%if 0%%{centos}
+# - %%if 0%%{?rhel}
+# - %%if 0%%{?fedora}
+#
+# Be aware, on centos, both %%rhel and %%centos are set. If you want to test
+# rhel specific macros, you can use %%if 0%%{?rhel} && 0%%{?centos} == 0 condition.
+# (Don't forget to replace double percentage symbol with single one in order to apply a condition)
+
+# Generate devel rpm
+%global with_devel 1
+# Build project from bundled dependencies
 %if 0%{?fedora}
-%global with_devel 1
-%global with_debug 1
-%global with_check 1
-%global with_unit_test 1
+%global with_bundled 0
 %else
-%global with_devel 1
-%global with_debug 1
-%global with_check 0
-%global with_unit_test 0
+%global with_bundled 1
 %endif
+# Build with debug info rpm
+%global with_debug 1
+# Run tests in check section
+%global with_check 1
+# Generate unit-test rpm
+%global with_unit_test 1
 
 %if 0%{?with_debug}
 %global _dwz_low_mem_die_limit 0
 %else
 %global debug_package   %{nil}
+%endif
+
+%if ! 0%{?gobuild:1}
+%define gobuild(o:) go build -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n')" -a -v -x %{?**};
 %endif
 
 %global provider        github
@@ -26,7 +47,7 @@
 
 Name:          %{repo}
 Version:       2.21
-Release:       1%{?dist}
+Release:       2%{?dist}
 Summary:       Container hypervisor based on LXC
 License:       ASL 2.0
 URL:           https://linuxcontainers.org/lxd
@@ -48,12 +69,7 @@ ExclusiveArch:  %{?go_arches:%{go_arches}}%{!?go_arches:%{ix86} x86_64 aarch64 %
 # If go_compiler is not set to 1, there is no virtual provide. Use golang instead.
 BuildRequires:  %{?go_compiler:compiler(go-compiler)}%{!?go_compiler:golang}
 
-BuildRequires: libacl-devel
-BuildRequires: sqlite-devel
-BuildRequires: pkgconfig(lxc)
-BuildRequires: systemd-units
-BuildRequires: help2man
-
+%if ! 0%{?with_bundled}
 BuildRequires: golang(github.com/dustinkirkland/golang-petname)
 BuildRequires: golang(github.com/golang/protobuf/proto)
 BuildRequires: golang(github.com/gorilla/mux)
@@ -79,6 +95,13 @@ BuildRequires: golang(gopkg.in/macaroon-bakery.v2/httpbakery)
 BuildRequires: golang(gopkg.in/macaroon-bakery.v2/httpbakery/form)
 BuildRequires: golang(gopkg.in/tomb.v2)
 BuildRequires: golang(gopkg.in/yaml.v2)
+%endif
+
+BuildRequires: libacl-devel
+BuildRequires: sqlite-devel
+BuildRequires: pkgconfig(lxc)
+BuildRequires: systemd-units
+BuildRequires: help2man
 
 Requires: acl
 Requires: dnsmasq
@@ -123,6 +146,7 @@ BuildArch:     noarch
 BuildRequires: btrfs-progs
 BuildRequires: dnsmasq
 
+%if ! 0%{?with_bundled}
 BuildRequires: golang(github.com/dustinkirkland/golang-petname)
 BuildRequires: golang(github.com/golang/protobuf/proto)
 BuildRequires: golang(github.com/gorilla/mux)
@@ -154,7 +178,9 @@ BuildRequires: golang(gopkg.in/macaroon-bakery.v2/httpbakery/form)
 BuildRequires: golang(gopkg.in/tomb.v2)
 BuildRequires: golang(gopkg.in/yaml.v2)
 %endif
+%endif
 
+%if ! 0%{?with_bundled}
 Requires:      golang(github.com/dustinkirkland/golang-petname)
 Requires:      golang(github.com/golang/protobuf/proto)
 Requires:      golang(github.com/gorilla/mux)
@@ -183,6 +209,7 @@ Requires:      golang(gopkg.in/macaroon-bakery.v2/httpbakery)
 Requires:      golang(gopkg.in/macaroon-bakery.v2/httpbakery/form)
 Requires:      golang(gopkg.in/tomb.v2)
 Requires:      golang(gopkg.in/yaml.v2)
+%endif
 
 Provides:      golang(%{import_path}/client) = %{version}-%{release}
 Provides:      golang(%{import_path}/lxc/config) = %{version}-%{release}
@@ -262,8 +289,13 @@ This package contains the command line client.
 %package tools
 Summary:       Container hypervisor based on LXC - Extra Tools
 
+%if 0%{?rhel}
+BuildRequires: python34-lxc
+Requires:      python34-lxc
+%else
 BuildRequires: python3-lxc
 Requires:      python3-lxc
+%endif
 
 %description tools
 LXD offers a REST API to remotely manage containers over the network,
@@ -286,6 +318,12 @@ This package contains user documentation.
 
 %prep
 %autosetup -n %{name}-%{version} -p1
+
+%if 0%{?with_bundled}
+# move content of vendor under Godeps as has been so far
+mkdir -p Godeps/_workspace/src
+mv dist/src/* Godeps/_workspace/src/.
+%endif
 
 %build
 mkdir -p src/%{provider}.%{provider_tld}/%{project}
@@ -355,7 +393,7 @@ install -d -m 711 %{buildroot}%{_localstatedir}/lib/%{name}
 install -d %{buildroot}%{_localstatedir}/log/%{name}
 
 # source codes for building projects
-%if 0%{?with_devel} || ! 0%{?with_bundled}
+%if 0%{?with_devel}
 install -d -p %{buildroot}/%{gopath}/src/%{import_path}/
 echo "%%dir %%{gopath}/src/%%{import_path}/." >> devel.file-list
 # find all *.go but no *_test.go files and generate devel.file-list
@@ -368,7 +406,7 @@ done
 %endif
 
 # testing files for this project
-%if 0%{?with_unit_test}
+%if 0%{?with_unit_test} && 0%{?with_devel}
 install -d -p %{buildroot}/%{gopath}/src/%{import_path}/
 # find all *_test.go files and generate unit-test.file-list
 for file in $(find . -iname "*_test.go" -o -type f -wholename "./test/deps/s*"); do
@@ -377,18 +415,18 @@ for file in $(find . -iname "*_test.go" -o -type f -wholename "./test/deps/s*");
     cp -pav $file %{buildroot}/%{gopath}/src/%{import_path}/$file
     echo "%%{gopath}/src/%%{import_path}/$file" >> unit-test.file-list
 done
+%endif
 
 %if 0%{?with_devel}
 sort -u -o devel.file-list devel.file-list
 %endif
-%endif
 
 %check
 %if 0%{?with_check} && 0%{?with_unit_test} && 0%{?with_devel}
-%if 0%{?with_bundled}
-export GOPATH=$(pwd)/Godeps/_workspace:%{gopath}
-%else
+%if ! 0%{?with_bundled}
 export GOPATH=%{buildroot}/%{gopath}:%{gopath}
+%else
+export GOPATH=%{buildroot}/%{gopath}:$(pwd)/Godeps/_workspace:%{gopath}
 %endif
 
 %if ! 0%{?gotest:1}
