@@ -87,6 +87,10 @@ rm -f %{buildroot}%{_libdir}/%{name}/liblxcfs.la
 /%{_lib}/security/pam_cgfs.so
 
 %changelog
+* Mon Feb 05 2018 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.0.8-0.2
+- Fix systemd scriptlets
+- Fix removal of static library
+
 * Wed Oct 25 2017 Reto Gantenbein <reto.gantenbein@linuxmonk.ch> 2.0.8-0.1
 - Update to 2.0.8.
 
