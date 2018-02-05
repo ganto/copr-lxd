@@ -1,6 +1,6 @@
 Name:       lxcfs
 Version:    2.0.8
-Release:    0.1%{?dist}
+Release:    0.2%{?dist}
 Summary:    FUSE filesystem for LXC
 
 License:    ASL 2.0
@@ -17,6 +17,10 @@ BuildRequires: pam-devel
 BuildRequires: pkgconfig
 BuildRequires: pkgconfig(fuse)
 BuildRequires: systemd-units
+
+Requires(post):   systemd
+Requires(preun):  systemd
+Requires(postun): systemd
 
 AutoProv:      no
 
@@ -53,10 +57,13 @@ make %{?_smp_mflags}
 %install
 make install DESTDIR=%{buildroot} %{?_smp_mflags}
 install -d -m 0755 %{buildroot}%{_localstatedir}/lib/%{name}/
-rm -f %{buildroot}%{_libdir}/liblxcfs.la
+rm -f %{buildroot}%{_libdir}/%{name}/liblxcfs.la
 
 %post
 %systemd_post %{name}.service
+
+%preun
+%systemd_preun %{name}.service
 
 %postun
 %systemd_postun %{name}.service
